@@ -1,0 +1,35 @@
+[
+	[
+		"token",
+		{
+			"annotation": {
+				"range": {
+					"start": {
+						"position": 4,
+						"line": 1,
+						"column": 5
+					},
+					"length": 33,
+					"size": [
+						"multi line",
+						{
+							"line offset": 2,
+							"column": 16
+						}
+					]
+				},
+				"indentation": ""
+			},
+			"token": [
+				"multiline string",
+				{
+					"lines": [
+						"first",
+						"second",
+						"     third"
+					]
+				}
+			]
+		}
+	]
+]
