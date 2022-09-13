@@ -1,9 +1,10 @@
 {
   "dependencies": {
-    "api-pareto-handledfilesystem": "^0.2.0",
+    "lib-pareto-test": "^0.4.1",
     "pareto-core-async": "^0.2.0",
-    "pareto-core-exe": "^0.3.0",
+    "pareto-core-exe": "^0.12.0",
     "pareto-core-lib": "^0.4.0",
-    "res-pareto-filesystem": "^0.21.0"
+    "res-pareto-diff": "^0.10.0",
+    "res-pareto-filesystem": "^0.24.0"
   }
 }

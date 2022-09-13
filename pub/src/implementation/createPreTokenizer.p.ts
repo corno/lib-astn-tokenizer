@@ -91,11 +91,11 @@ function createRangeFromSingleLocation(location: api.LocationInfo): api.Range {
 
 type CurrentToken =
     | ["block comment", BlockCommentContext]
-    | ["line comment", {}]
+    | ["line comment", null]
     | ["none", NoneContext]
-    | ["non wrapped string", {}]
+    | ["non wrapped string", null]
     | ["wrapped string", StringContext]
-    | ["whitespace", {}]
+    | ["whitespace", null]
 
 type BlockCommentContext = {
     locationOfFoundAsterisk: null | api.LocationInfo
@@ -103,8 +103,8 @@ type BlockCommentContext = {
 
 type FoundNewlineCharacter = {
     type:
-    | ["carriage return", {}]
-    | ["line feed", {}]
+    | ["carriage return", null]
+    | ["line feed", null]
     startLocation: api.LocationInfo
 }
 
@@ -323,7 +323,7 @@ export function createPreTokenizer(
             switch (ct[0]) {
                 case "block comment": {
                     onError({
-                        error: { type: ["unterminated block comment", {}] },
+                        error: { type: ["unterminated block comment", null] },
                         range: createRangeFromSingleLocation(locationState.getCurrentLocation()),
                     })
                     return {
@@ -352,7 +352,7 @@ export function createPreTokenizer(
                         }
                     } else if ($.foundSolidus) {
                         onError({
-                            error: { type: ["found dangling slash at the end of the text", {}] },
+                            error: { type: ["found dangling slash at the end of the text", null] },
                             range: getCurrentCharacterRange(locationState),
                         })
                         return null
@@ -361,7 +361,7 @@ export function createPreTokenizer(
                     }
                 case "wrapped string": {
                     onError({
-                        error: { type: ["unterminated string", {}] },
+                        error: { type: ["unterminated string", null] },
                         range: createRangeFromLocations(locationState.getCurrentLocation(), locationState.getCurrentLocation()),
                     })
                     return {
@@ -486,7 +486,7 @@ export function createPreTokenizer(
                                         startSnippet: false,
                                         consumeCharacter: true,
                                         preToken: changeCurrentTokenType(
-                                            ["line comment", {}],
+                                            ["line comment", null],
                                             {
                                                 type: ["line comment begin", {
                                                     range: createRangeFromLocations($.foundSolidus, locationState.getCurrentLocation()),
@@ -512,7 +512,7 @@ export function createPreTokenizer(
 
                                 } else {
                                     onError({
-                                        error: { type: ["found dangling slash", {}] },
+                                        error: { type: ["found dangling slash", null] },
                                         range: getCurrentCharacterRange(locationState),
                                     })
                                     $.foundSolidus = null
@@ -529,7 +529,7 @@ export function createPreTokenizer(
                                     case Whitespace.carriageReturn: {
 
                                         $.foundNewlineCharacter = {
-                                            type: ["carriage return", {}],
+                                            type: ["carriage return", null],
                                             startLocation: locationState.getCurrentLocation(),
                                         }
                                         return {
@@ -541,7 +541,7 @@ export function createPreTokenizer(
                                     case Whitespace.lineFeed: {
 
                                         $.foundNewlineCharacter = {
-                                            type: ["line feed", {}],
+                                            type: ["line feed", null],
                                             startLocation: locationState.getCurrentLocation(),
                                         }
                                         return {
@@ -555,7 +555,7 @@ export function createPreTokenizer(
                                             startSnippet: false,
                                             consumeCharacter: false,
                                             preToken: changeCurrentTokenType(
-                                                ["whitespace", {}],
+                                                ["whitespace", null],
                                                 {
                                                     type: ["whitespace begin", {
                                                         location: locationState.getCurrentLocation(),
@@ -577,7 +577,7 @@ export function createPreTokenizer(
                                             startSnippet: false,
                                             consumeCharacter: false,
                                             preToken: changeCurrentTokenType(
-                                                ["whitespace", {}],
+                                                ["whitespace", null],
                                                 {
                                                     type: ["whitespace begin", {
                                                         location: locationState.getCurrentLocation(),
@@ -599,7 +599,7 @@ export function createPreTokenizer(
                                                 }],
                                                 {
                                                     type: ["wrapped string begin", {
-                                                        type: ["apostrophe", {}],
+                                                        type: ["apostrophe", null],
                                                         range: getCurrentCharacterRange(locationState),
                                                     }],
                                                 },
@@ -641,7 +641,7 @@ export function createPreTokenizer(
                                                 }],
                                                 {
                                                     type: ["wrapped string begin", {
-                                                        type: ["quote", {}],
+                                                        type: ["quote", null],
                                                         range: getCurrentCharacterRange(locationState),
                                                     }],
                                                 },
@@ -662,10 +662,10 @@ export function createPreTokenizer(
                                             }
                                         }
                                         switch (nextChar) {
-                                            case Structural.closeAngleBracket: return createStructuralToken(["close shorthand group", {}])
-                                            case Structural.closeBrace: return createStructuralToken(["close dictionary", {}])
-                                            case Structural.closeBracket: return createStructuralToken(["close list", {}])
-                                            case Structural.closeParen: return createStructuralToken(["close verbose group", {}])
+                                            case Structural.closeAngleBracket: return createStructuralToken(["close shorthand group", null])
+                                            case Structural.closeBrace: return createStructuralToken(["close dictionary", null])
+                                            case Structural.closeBracket: return createStructuralToken(["close list", null])
+                                            case Structural.closeParen: return createStructuralToken(["close verbose group", null])
                                             case Structural.colon: return {
                                                 startSnippet: false,
                                                 consumeCharacter: true,
@@ -685,17 +685,17 @@ export function createPreTokenizer(
                                                     }],
                                                 },
                                             }
-                                            case Structural.openAngleBracket: return createStructuralToken(["open shorthand group", {}])
-                                            case Structural.openBrace: return createStructuralToken(["open dictionary", {}])
-                                            case Structural.openBracket: return createStructuralToken(["open list", {}])
-                                            case Structural.openParen: return createStructuralToken(["open verbose group", {}])
-                                            case Structural.verticalLine: return createStructuralToken(["tagged union start", {}])
+                                            case Structural.openAngleBracket: return createStructuralToken(["open shorthand group", null])
+                                            case Structural.openBrace: return createStructuralToken(["open dictionary", null])
+                                            case Structural.openBracket: return createStructuralToken(["open list", null])
+                                            case Structural.openParen: return createStructuralToken(["open verbose group", null])
+                                            case Structural.verticalLine: return createStructuralToken(["tagged union start", null])
                                             default:
                                                 return {
                                                     startSnippet: false,
                                                     consumeCharacter: false,
                                                     preToken: changeCurrentTokenType(
-                                                        ["non wrapped string", {}],
+                                                        ["non wrapped string", null],
                                                         {
                                                             type: ["non wrapped string begin", {
                                                                 location: locationState.getCurrentLocation(),
@@ -931,8 +931,8 @@ export function createPreTokenizer(
 
                                             $.foundNewlineCharacter = {
                                                 type: nextChar === Whitespace.carriageReturn
-                                                    ? ["carriage return", {}]
-                                                    : ["line feed", {}],
+                                                    ? ["carriage return", null]
+                                                    : ["line feed", null],
                                                 startLocation: locationState.getCurrentLocation(),
                                             }
                                             return {
@@ -945,7 +945,7 @@ export function createPreTokenizer(
                                         return loopState.ensureFlushed(() => {
                                             const rangeInfo = getCurrentCharacterRange(locationState)
                                             onError({
-                                                error: { type: ["unterminated string", {}] },
+                                                error: { type: ["unterminated string", null] },
                                                 range: rangeInfo,
                                             })
 

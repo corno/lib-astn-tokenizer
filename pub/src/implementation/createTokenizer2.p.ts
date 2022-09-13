@@ -59,7 +59,7 @@ type WrappedStringContext = {
 }
 
 type CurrentToken =
-    | ["none", {}]
+    | ["none", null]
     | ["line comment", CommentContext]
     | ["block comment", CommentContext]
     | ["non wrapped string", NonWrappedStringContext]
@@ -119,19 +119,19 @@ export function createTokenizer2(
             indentation: indentationState.getIndentation(),
         }
     }
-    let currentToken: CurrentToken = ["none", {}]
+    let currentToken: CurrentToken = ["none", null]
 
     function setCurrentToken(contextType: CurrentToken, range: api.Range) {
         if (currentToken[0] !== "none") {
-            onError1(["unexpected start of token", {}], range)
+            onError1(["unexpected start of token", null], range)
         }
         currentToken = contextType
     }
     function unsetCurrentToken(range: api.Range) {
         if (currentToken[0] === "none") {
-            onError1(["unexpected, parser is already in 'none' mode", {}], range)
+            onError1(["unexpected, parser is already in 'none' mode", null], range)
         }
-        currentToken = ["none", {}]
+        currentToken = ["none", null]
     }
 
     return {
@@ -153,7 +153,7 @@ export function createTokenizer2(
                     const $ = data.type[1]
 
                     if (currentToken[0] !== "block comment") {
-                        onError1(["Unexpected block comment end", {}], $.range)
+                        onError1(["Unexpected block comment end", null], $.range)
                     }
                     //const $ = currentToken[1]
                     //const endOfStart = getEndLocationFromRange($.start)
@@ -206,7 +206,7 @@ export function createTokenizer2(
                     function onLineCommentEnd(location: api.LocationInfo) {
 
                         if (currentToken[0] !== "line comment") {
-                            onError1(["Unexpected line comment end", {}], createRangeFromSingleLocation(location))
+                            onError1(["Unexpected line comment end", null], createRangeFromSingleLocation(location))
                         }
 
                         //const $ = currentToken[1]
@@ -245,7 +245,7 @@ export function createTokenizer2(
 
                         switch (currentToken[0]) {
                             case "line comment": {
-                                onError1(["unexpected newline", {}], _range)
+                                onError1(["unexpected newline", null], _range)
                                 break
                             }
                             case "block comment": {
@@ -266,7 +266,7 @@ export function createTokenizer2(
                             case "wrapped string": {
                                 const $ = currentToken[1]
                                 if ($.type[0] !== "multiline") {
-                                    onError1(["unexpected newline", {}], _range)
+                                    onError1(["unexpected newline", null], _range)
                                 } else {
                                     $d.push($.type[1].previousLines, $.wrappedStringNode)
                                     $.wrappedStringNode = ""
@@ -274,11 +274,11 @@ export function createTokenizer2(
                                 break
                             }
                             case "non wrapped string": {
-                                onError1(["unexpected newline", {}], _range)
+                                onError1(["unexpected newline", null], _range)
                                 break
                             }
                             case "whitespace": {
-                                onError1(["unexpected newline", {}], _range)
+                                onError1(["unexpected newline", null], _range)
                                 break
                             }
                             default:
@@ -295,7 +295,7 @@ export function createTokenizer2(
                         annotation: createAnnotation(
                             $.range,
                         ),
-                        token: ["header start", {}],
+                        token: ["header start", null],
                     })
                     break
                 }
@@ -327,7 +327,7 @@ export function createTokenizer2(
                             break
                         }
                         case "none": {
-                            onError1(["unexpected snippet", {}], )
+                            onError1(["unexpected snippet", null], )
                             break
                         }
                         case "wrapped string": {
@@ -371,7 +371,7 @@ export function createTokenizer2(
                     const $ = data.type[1]
                     function onWrappedStringEnd(end: api.Range, wrapper: string | null) {
                         if (currentToken[0] !== "wrapped string") {
-                            onError1(["Unexpected nonwrapped string end", {}], end)
+                            onError1(["Unexpected nonwrapped string end", null], end)
                         } else {
                             const $tok = currentToken[1]
                             const $ = currentToken[1]
@@ -388,7 +388,7 @@ export function createTokenizer2(
                                         ),
                                         token: ["simple string", {
                                             value: $.wrappedStringNode,
-                                            wrapping: ["apostrophe", {}],
+                                            wrapping: ["apostrophe", null],
                                         }],
                                     })
                                     break
@@ -423,7 +423,7 @@ export function createTokenizer2(
                                         ),
                                         token: ["simple string", {
                                             value: $.wrappedStringNode,
-                                            wrapping: ["quote", {}],
+                                            wrapping: ["quote", null],
                                         }],
                                     })
                                     break
@@ -452,7 +452,7 @@ export function createTokenizer2(
                     function onNonWrappedStringEnd(location: api.LocationInfo) {
 
                         if (currentToken[0] !== "non wrapped string") {
-                            onError1(["Unexpected nonwrapped string end", {}], createRangeFromSingleLocation(location))
+                            onError1(["Unexpected nonwrapped string end", null], createRangeFromSingleLocation(location))
                         } else {
                             const $ = currentToken[1]
 
@@ -466,7 +466,7 @@ export function createTokenizer2(
                                 ),
                                 token: ["simple string", {
                                     value: value,
-                                    wrapping: ["none", {}],
+                                    wrapping: ["none", null],
                                     //startCharacter: $tok.startCharacter,
                                     //wrapper: null,
                                 }],
@@ -492,7 +492,7 @@ export function createTokenizer2(
                     function onWhitespaceEnd(location: api.LocationInfo) {
 
                         if (currentToken[0] !== "whitespace") {
-                            onError1(["Unexpected whitespace end", {}], createRangeFromSingleLocation(location))
+                            onError1(["Unexpected whitespace end", null], createRangeFromSingleLocation(location))
                         } else {
                             const $ = currentToken[1]
                             //const range = createRangeFromLocations($.start, location)

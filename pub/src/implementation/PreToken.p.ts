@@ -1,12 +1,11 @@
+import * as tc from "api-astn-tokenconsumer"
 
-import * as sp from "api-astn-tokenconsumer"
-
-import * as api from "../../../interface"
+import * as api from "../interface"
 
 
 export type WrappedStringType =
-    | ["apostrophe", {}]
-    | ["quote", {}]
+    | ["apostrophe", null]
+    | ["quote", null]
     | ["multiline", {
         previousLines: string[]
     }]
@@ -29,13 +28,13 @@ export type PreToken = {
         range: api.Range
     }]
     | ["line comment end", {
-        location: api.LocationInfo //| null
+        location: api.Location //| null
     }]
     | ["newline", {
         range: api.Range //| null
     }]
     | ["structural", {
-        type: sp.StructuralTokenType
+        type: tc.StructuralTokenType
         range: api.Range
     }]
     | ["wrapped string begin", {

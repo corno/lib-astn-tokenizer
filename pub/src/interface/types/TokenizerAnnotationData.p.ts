@@ -1,4 +1,4 @@
-import * as g from "./Range"
+import { TRange } from "./Range.p"
 
 // export type Comment = {
 //     text: string
@@ -19,8 +19,8 @@ import * as g from "./Range"
 //     lineCommentAfter: null | Comment
 // }
 
-export type TokenizerAnnotationData = {
-    indentation: string
+export type TTokenizerAnnotationData = {
+    readonly "indentation": string
     //tokenString: string | null
-    range: g.Range
+    readonly "range": TRange
 }
