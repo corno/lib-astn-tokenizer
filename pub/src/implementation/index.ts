@@ -16,3 +16,5 @@ export function init(): API {
     }
 
 }
+
+export type PrintTokenizerError = ($: api.TokenizerError) => string

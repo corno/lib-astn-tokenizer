@@ -8,7 +8,7 @@ import * as pa from "pareto-core-types"
 import * as sp from "api-astn-tokenconsumer"
 import * as uglyStuff from "api-pareto-ugly-stuff"
 
-import * as api from "../interface"
+import * as api from "../../interface"
 import * as iapi from "./internal_interface"
 
 import { PreToken } from "./PreToken"
@@ -67,7 +67,7 @@ const UnicodeChars = {
 
 }
 
-function createRangeFromLocations(start: api.LocationInfo, end: api.LocationInfo): api.Range {
+function createRangeFromLocations(start: api.TLocationInfo, end: api.LocationInfo): api.Range {
     return {
         start: start,
         length: end.absolutePosition - start.absolutePosition,
