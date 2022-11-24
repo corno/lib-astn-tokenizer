@@ -1,4 +1,10 @@
-import * as pt from "pareto-core-types"
+import * as api from "../api"
+import { createLocationMessage } from "./public/createLocationMessage.p"
+
+export const $a: api.API = {
+    createLocationString: createLocationMessage,
+}
+
 // import { createCreateTokenizer, createCreateTokenizerWithSerializedError } from "./createCreateTokenizer"
 // import { printTokenizerError } from "./printTokenizerError"
 // import { printLocation } from "./createLocationMessage"
@@ -18,3 +24,6 @@ import * as pt from "pareto-core-types"
 // }
 
 // export type PrintTokenizerError = ($: api.TokenizerError) => string
+
+
+export * from "./public/createLocationMessage.p"
