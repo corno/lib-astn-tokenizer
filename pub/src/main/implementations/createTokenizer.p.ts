@@ -64,6 +64,8 @@ export const $$: api.CcreateTokenizer = ($d) => {
                         return pl.cc($[1], ($) => {
                             if ($.type[0] === 'whitespace') {
                                 return false //correct?
+                            } else {
+                                return true
                             }
                         })
                     // case 'whitespace end':
@@ -135,22 +137,32 @@ export const $$: api.CcreateTokenizer = ($d) => {
                     switch ($.type[0]) {
                         case 'begin':
                             pl.cc($.type[1], ($) => {
-
+                                pl.implementMe("@@@")
                             })
                             break
                         case 'header start':
                             pl.cc($.type[1], ($) => {
+                                pl.implementMe("@@@")
 
                             })
                             break
                         case 'newline':
                             pl.cc($.type[1], ($) => {
+                                pl.implementMe("@@@")
 
                             })
                             break
                         case 'structural':
                             pl.cc($.type[1], ($) => {
-
+                                // switch ($.type[0]) {
+                                //     case '': 
+                                //         pl.cc($.type[1], ($) => {
+                                          
+                                //         })
+                                //         break
+                                //     default: pl.au($.type[0])
+                                // }
+                                pl.implementMe("@@@")
                             })
                             break
                         default: {
