@@ -27,16 +27,19 @@ export const $: mmoduleDefinition.TModuleDefinition = {
             "bool": "res-pareto-boolean",
         }),
         'algorithms': d({
+            "createBoundPretokenizer": algorithm(definitionReference("Pretokenize"), constructor(null, {
+                "onError": definitionReference("OnPretokenError"),
+            })),
             "createPretokenizer": algorithm(definitionReference("PretokenizeCharacters"), constructor(typeReference("PretokenizerConfigurationData"), {
-                "onError": definitionReference("OnError"),
+                "onError": definitionReference("OnPretokenError"),
                 "convertToCharacters": definitionReference("ConvertToCharacters"),
                 "convertToString": definitionReference("ConvertToString"),
                 "isEqual": definitionReference("bool", "Equal"),
                 "increment": definitionReference("Increment"),
             })),
-            "createBoundPretokenizer": algorithm(definitionReference("Pretokenize"), constructor(null, {
-                "onError": definitionReference("OnError"),
-            }))
+            "createTokenizer": algorithm(definitionReference("Tokenize"), constructor(null, {
+                "onError": definitionReference("OnTokenError"),
+            })),
         })
     },
 }

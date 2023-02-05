@@ -22,7 +22,22 @@ export const $: mglossary.TGlossary = {
     'templates': d({}),
     'types': types({
         "Characters": array(number()),
-        "Error": group({
+        "TokenError": group({
+            // "type": member(taggedUnion({
+            //     "unterminated block comment": group({}),
+            //     "found dangling slash at the end of the text": group({}),
+            //     "unterminated string": group({}),
+            //     // | ["found dangling slash", null]
+            //     // | ["expected hexadecimal digit", {
+            //     //     readonly "found": string
+            //     // }]
+            //     // | ["expected special character after escape slash", {
+            //     //     readonly "found": string
+            //     // }]  
+            // })),
+            // "location": member(reference("LocationInfo")),
+        }),
+        "PretokenError": group({
             "type": member(taggedUnion({
                 "unterminated block comment": group({}),
                 "found dangling slash at the end of the text": group({}),
@@ -51,34 +66,28 @@ export const $: mglossary.TGlossary = {
             "type": member(taggedUnion({
                 "header start": group({
                 }),
-                "block comment begin": group({
+                "begin": group({
+                    "type": member(taggedUnion({
+                        "block comment": group({
+                        }),
+                        "line comment": group({
+                        }),
+                        "wrapped string": group({
+                            //"type": member(reference("tc", "WrappedStringType")),
+                        }),
+                        "non wrapped string": group({
+                        }),
+                        "whitespace": group({
+                        }),
+                    }))
                 }),
-                "block comment end": group({
-                }),
-                "line comment begin": group({
-                }),
-                "line comment end": group({
-                }),
+                "end": group({}),
                 "newline": group({
                 }),
                 "structural": group({
                     //"type": member(reference("tc", "StructuralTokenType")),
                 }),
-                "wrapped string begin": group({
-                    //"type": member(reference("tc", "WrappedStringType")),
-                }),
-                "wrapped string end": group({
-                    //     wrapper: string | null
-                }),
                 "snippet": reference("common", "String"),
-                "non wrapped string begin": group({
-                }),
-                "non wrapped string end": group({
-                }),
-                "whitespace begin": group({
-                }),
-                "whitespace end": group({
-                }),
             })),
             "location": member(reference("LocationInfo"))
         }),
@@ -152,6 +161,9 @@ export const $: mglossary.TGlossary = {
                 "column": member(number()),
             }),
         }),
+        "Token": taggedUnion({
+            "Foo": group({}),
+        })
     }),
     'interfaces': d({
         "StringStreamConsumer": ['group', { //REPLACE BY THE STRINGSTREAMCONSUMER IN GLO-PARETO-COMMON
@@ -161,13 +173,16 @@ export const $: mglossary.TGlossary = {
             }),
         }],
         "PretokenHandler": method(typeReference("Pretoken")),
+        "TokenHandler": method(typeReference("Token")),//REPLACE BY glo-pareto-tokenconsumer
     }),
     'functions': d({
         "Increment": func(typeReference("common", "Number"), null, null, data(typeReference("common", "Number"), false)),
-        "OnError": func(typeReference("Error"), null, null, null),
+        "OnPretokenError": func(typeReference("PretokenError"), null, null, null),
+        "OnTokenError": func(typeReference("TokenError"), null, null, null),
         "ConvertToCharacters": func(typeReference("common", "String"), null, null, data(typeReference("Characters"), false)),
         "ConvertToString": func(typeReference("Characters"), null, null, data(typeReference("common", "String"), false)),
         "PretokenizeCharacters": func(typeReference("common", "Null"), null, interfaceReference("PretokenHandler"), inf(interfaceReference("StringStreamConsumer"))),
         "Pretokenize": func(typeReference("common", "Null"), null, interfaceReference("PretokenHandler"), inf(interfaceReference("StringStreamConsumer"))),
+        "Tokenize": func(typeReference("common", "Null"), null, interfaceReference("TokenHandler"), inf(interfaceReference("PretokenHandler"))),
     }),
 }

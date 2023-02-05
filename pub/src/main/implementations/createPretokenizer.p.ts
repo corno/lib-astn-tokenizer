@@ -87,7 +87,6 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
         'snippet': ps.createArrayBuilder(),
     }
 
-
     return ($, $i) => {
         function createLocation(): api.TLocationInfo {
             return {
@@ -98,7 +97,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                 }
             }
         }
-        function onError($: api.GError.Ptype) {
+        function onError($: api.GPretokenError.Ptype) {
             $d.onError({
                 'type': $,
                 'location': createLocation()
@@ -110,15 +109,25 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                 'location': createLocation()
             })
         }
+        function onStart($: api.GPretoken.Ptype.Obegin.Ptype) {
+            onPretoken(['begin', {
+                'type': $,
+            }])
+        }
+        function onEnd() {
+            onPretoken(['end', {}])
+        }
         function flushSnippet() {
             const characters = $s.snippet.getArray()
             $s.snippet = ps.createArrayBuilder()
             onPretoken(['snippet', $d.convertToString(characters)])
         }
-        function noCurrentToken() {
-            stateRoot.currentToken = ['none', { 'found': ['nothing', {}] }]
+        function pushCharacter($: number) {
+            $s.snippet.push($)
         }
-        const stateRoot = $s
+        function noCurrentToken() {
+            $s.currentToken = ['none', { 'found': ['nothing', {}] }]
+        }
         return {
             onData: ($) => {
                 $d.convertToCharacters($).forEach(($) => {
@@ -174,19 +183,19 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                                 if ($s.foundAsterisk) {
                                     if ($d.isEqual({ 'this': $, 'that': $c.characters.comment.solidus })) {
                                         flushSnippet()
-                                        onPretoken(['block comment end', {}])
+                                        onStart(['block comment', {}])
                                         noCurrentToken()
                                     } else {
                                         //not the end of the comment
-                                        stateRoot.snippet.push($c.characters.comment.asterisk)
-                                        stateRoot.snippet.push($)
+                                        pushCharacter($c.characters.comment.asterisk)
+                                        pushCharacter($)
                                     }
 
                                 } else {
                                     if ($d.isEqual({ 'this': $, 'that': $c.characters.comment.asterisk })) {
                                         $s.foundAsterisk = true
                                     } else {
-                                        stateRoot.snippet.push($)
+                                        pushCharacter($)
                                     }
                                 }
                             })
@@ -200,7 +209,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                         case 'non wrapped string':
                             pl.cc($s.currentToken[1], ($s) => {
                                 pl.implementMe("@@@@")
-                                
+
                             })
                             break
                         case 'none':
@@ -212,7 +221,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                         case 'whitespace':
                             pl.cc($s.currentToken[1], ($s) => {
                                 pl.implementMe("@@@@")
-                                
+
                             })
                             break
                         case 'wrapped string':
@@ -234,21 +243,21 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                         pl.cc($s.currentToken[1], ($s) => {
                             onError(['unterminated block comment', {}])
                             flushSnippet()
-                            onPretoken(['block comment end', {}])
+                            onEnd()
                             noCurrentToken()
                         })
                         break
                     case 'line comment':
                         pl.cc($s.currentToken[1], ($s) => {
                             flushSnippet()
-                            onPretoken(['line comment end', {}])
+                            onEnd()
                             noCurrentToken()
                         })
                         break
                     case 'non wrapped string':
                         pl.cc($s.currentToken[1], ($s) => {
                             flushSnippet()
-                            onPretoken(['non wrapped string end', {}])
+                            onEnd()
                             noCurrentToken()
                         })
                         break
@@ -277,7 +286,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                     case 'whitespace':
                         pl.cc($s.currentToken[1], ($s) => {
                             flushSnippet()
-                            onPretoken(['whitespace end', {}])
+                            onEnd()
                             noCurrentToken()
                         })
                         break
@@ -285,7 +294,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                         pl.cc($s.currentToken[1], ($s) => {
                             onError(['unterminated string', {}])
                             flushSnippet()
-                            onPretoken(['wrapped string end', {}])
+                            onEnd()
                             noCurrentToken()
                         })
                         break
