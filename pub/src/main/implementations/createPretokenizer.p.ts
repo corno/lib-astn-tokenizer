@@ -53,7 +53,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
     type SStringContext = {
         'slashed': boolean
         'startCharacter': number
-        'unicode': null | SUnicode
+        'unicode': Optional<SUnicode>
         'foundNewlineCharacter': Optional<SFoundNewlineCharacter>
     }
 
@@ -193,26 +193,31 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                             break
                         case 'line comment':
                             pl.cc($s.currentToken[1], ($s) => {
-                                
+
+                                pl.implementMe("@@@@")
                             })
                             break
                         case 'non wrapped string':
                             pl.cc($s.currentToken[1], ($s) => {
+                                pl.implementMe("@@@@")
                                 
                             })
                             break
                         case 'none':
                             pl.cc($s.currentToken[1], ($s) => {
+                                pl.implementMe("@@@@")
                                 $s.found
                             })
                             break
                         case 'whitespace':
                             pl.cc($s.currentToken[1], ($s) => {
+                                pl.implementMe("@@@@")
                                 
                             })
                             break
                         case 'wrapped string':
                             pl.cc($s.currentToken[1], ($s) => {
+                                pl.implementMe("@@@@")
                                 $s.foundNewlineCharacter
                                 $s.slashed
                                 $s.startCharacter
@@ -257,7 +262,6 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                                     break
                                 case 'nothing':
                                     pl.cc($s.found[1], ($s) => {
-
                                     })
                                     break
                                 case 'solidus':
