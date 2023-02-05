@@ -25,12 +25,12 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
     }
 
     type SCurrentToken =
-        | ["block comment", SBlockCommentContext]
-        | ["line comment", {}]
-        | ["none", SNoneContext]
-        | ["non wrapped string", {}]
-        | ["wrapped string", SStringContext]
-        | ["whitespace", {}]
+        | ['block comment', SBlockCommentContext]
+        | ['line comment', {}]
+        | ['none', SNoneContext]
+        | ['non wrapped string', {}]
+        | ['wrapped string', SStringContext]
+        | ['whitespace', {}]
 
     type SBlockCommentContext = {
         'foundAsterisk': boolean
@@ -38,8 +38,8 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
 
     type SFoundNewlineCharacter = {
         'type':
-        | ["carriage return", {}]
-        | ["line feed", {}]
+        | ['carriage return', {}]
+        | ['line feed', {}]
         'startLocation': api.TLocationInfo
     }
 
@@ -59,7 +59,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
 
     type SUnicode = {
         'charactersLeft': number
-        'foundCharacters': ""
+        'foundCharacters': pt.Array<number>
     }
 
     type SState = {
@@ -74,7 +74,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
     }
 
     const $s: SState = {
-        'currentToken': ["none", {
+        'currentToken': ['none', {
             'found': ['nothing', {}]
         }],
         'location': {
