@@ -1,2 +1,2 @@
-export * from "./implementation"
-export * from "./api"
+export { $a } from "./main"
+export * from "./main"

@@ -1,2 +1,3 @@
 export * from "./glossary"
-export * from "./functions.p"
+export * from "./constructors.p"
+export * from "./api.data"

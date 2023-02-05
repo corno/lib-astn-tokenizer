@@ -1,8 +1,11 @@
 import * as api from "../api"
 import { createLocationMessage } from "./public/createLocationMessage.p"
+import { createPretokenizer } from "./public/createPreTokenizer.p"
 
 export const $a: api.API = {
     createLocationString: createLocationMessage,
+
+    createPretokenizer: createPretokenizer,
 }
 
 // import { createCreateTokenizer, createCreateTokenizerWithSerializedError } from "./createCreateTokenizer"
