@@ -1,7 +1,7 @@
 {
   "author": "Corno",
   "license": "ISC",
-  "description": "ASTN Tokenizer",
+  "description": "the ASTN Tokenizer",
 
   "dependencies": {
     "glo-pareto-common": "^0.11.0",

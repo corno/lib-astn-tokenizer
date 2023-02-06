@@ -8,12 +8,11 @@ import { $ as api } from "./api.data"
 
 export const $: mproject.TProject = {
     'author': "Corno",
-    'description': "ASTN Tokenizer",
+    'description': "the ASTN Tokenizer",
     'license': "ISC",
 
     'pubdependencies': d({
         "glo-pareto-common": {},
-
         "res-pareto-boolean": {},
     }),
     'type': ['library', {
@@ -22,6 +21,7 @@ export const $: mproject.TProject = {
         },
         'submodules': d({
         }),
+        'executables': d({}),
         'test': {
             'dependencies': d({
             }),
