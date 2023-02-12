@@ -19,7 +19,7 @@ import { $ as glossary } from "./glossary.data"
 
 const d = pr.wrapRawDictionary
 
-export const $: mmoduleDefinition.TModuleDefinition = {
+export const $: mmoduleDefinition.T.ModuleDefinition = {
     'glossary': glossary,
     'api': {
         'imports': d({
@@ -34,7 +34,7 @@ export const $: mmoduleDefinition.TModuleDefinition = {
                 "onError": definitionReference("OnPretokenError"),
                 "convertToCharacters": definitionReference("ConvertToCharacters"),
                 "convertToString": definitionReference("ConvertToString"),
-                "isEqual": definitionReference("bool", "Equal"),
+                "isEqual": definitionReference("bool", {}, "Equal"),
                 "increment": definitionReference("Increment"),
             })),
             "createTokenizer": algorithm(definitionReference("Tokenize"), constructor(null, {

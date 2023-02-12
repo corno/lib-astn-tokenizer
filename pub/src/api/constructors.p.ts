@@ -1,4 +1,4 @@
-import * as pt from "pareto-core-types"
+import * as pt from 'pareto-core-types'
 import { PPreTokenConsumer, PStreamConsumer, TRange, TTokenizerError } from "./glossary"
 
 export type CCreatePretokenizer = pt.Creator<

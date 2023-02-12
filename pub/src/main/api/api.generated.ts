@@ -8,7 +8,7 @@ export type CcreateBoundPretokenizer = ($d: {
     readonly 'onError': glo.FOnPretokenError
 }) => glo.FPretokenize
 
-export type CcreatePretokenizer = ($: glo.TPretokenizerConfigurationData, $d: {
+export type CcreatePretokenizer = ($: glo.T.PretokenizerConfigurationData, $d: {
     readonly 'convertToCharacters': glo.FConvertToCharacters
     readonly 'convertToString': glo.FConvertToString
     readonly 'increment': glo.FIncrement

@@ -1,5 +1,5 @@
 
-// import * as pt from "pareto-core-types"
+// import * as pt from 'pareto-core-types'
 // import * as tapi from "../interface"
 // import * as inf from "./internal_interface"
 

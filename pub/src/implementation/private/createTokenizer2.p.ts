@@ -1,8 +1,8 @@
 // /* eslint
 //     complexity: off
 // */
-// import * as pl from "pareto-core-lib"
-// import * as pw from "pareto-core-raw"
+// import * as pl from 'pareto-core-lib'
+// import * as pw from 'pareto-core-raw'
 
 // import * as sp from "api-astn-tokenconsumer"
 // import * as uglyStuff from "api-pareto-ugly-stuff"

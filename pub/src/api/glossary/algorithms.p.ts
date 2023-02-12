@@ -1,4 +1,4 @@
-import * as pt from "pareto-core-types"
+import * as pt from 'pareto-core-types'
 
 //import * as tc from "glo-astn-tokenconsumer"
 import { TLineLocation, TPreToken, TRange, TTokenizerAnnotationData, TTokenizerError } from "./types.p"

@@ -1,50 +1,30 @@
 import * as pt from 'pareto-core-types'
 
-import * as t from './types.generated'
+import { T   } from './types.generated'
 
 import * as mcommon from "glo-pareto-common"
 
-export type TCharacters = t.UCharacters
-
-export type TLineLocation = t.ULineLocation
-
-export type TLocationInfo = t.ULocationInfo
-
-export type TPretoken = t.UPretoken
-
-export type TPretokenError = t.UPretokenError
-
-export type TPretokenizerConfigurationData = t.UPretokenizerConfigurationData
-
-export type TRange = t.URange
-
-export type TRangeSize = t.URangeSize
-
-export type TToken = t.UToken
-
-export type TTokenError = t.UTokenError
-
-export type IPretokenHandler = ($: TPretoken, ) => void
+export type IPretokenHandler = ($: T.Pretoken, ) => void
 
 export type IStringStreamConsumer = {
-    'onData': ($: mcommon.TString, ) => void
+    'onData': ($: mcommon.T.String, ) => void
     'onEnd': () => void
 }
 
-export type ITokenHandler = ($: TToken, ) => void
+export type ITokenHandler = ($: T.Token, ) => void
 
-export type FConvertToCharacters = ($: mcommon.TString,) => TCharacters
+export type FConvertToCharacters = ($: mcommon.T.String,) => T.Characters
 
-export type FConvertToString = ($: TCharacters,) => mcommon.TString
+export type FConvertToString = ($: T.Characters,) => mcommon.T.String
 
-export type FIncrement = ($: mcommon.TNumber,) => mcommon.TNumber
+export type FIncrement = ($: mcommon.T.Number,) => mcommon.T.Number
 
-export type FOnPretokenError = ($: TPretokenError,) => void
+export type FOnPretokenError = ($: T.PretokenError,) => void
 
-export type FOnTokenError = ($: TTokenError,) => void
+export type FOnTokenError = ($: T.TokenError,) => void
 
-export type FPretokenize = ($: mcommon.TNull, $i: IPretokenHandler,) => IStringStreamConsumer
+export type FPretokenize = ($: mcommon.T.Null, $i: IPretokenHandler,) => IStringStreamConsumer
 
-export type FPretokenizeCharacters = ($: mcommon.TNull, $i: IPretokenHandler,) => IStringStreamConsumer
+export type FPretokenizeCharacters = ($: mcommon.T.Null, $i: IPretokenHandler,) => IStringStreamConsumer
 
-export type FTokenize = ($: mcommon.TNull, $i: ITokenHandler,) => IPretokenHandler
+export type FTokenize = ($: mcommon.T.Null, $i: ITokenHandler,) => IPretokenHandler

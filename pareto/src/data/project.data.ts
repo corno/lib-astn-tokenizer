@@ -6,7 +6,7 @@ const d = pr.wrapRawDictionary
 
 import { $ as api } from "./api.data"
 
-export const $: mproject.TProject = {
+export const $: mproject.T.Project = {
     'author': "Corno",
     'description': "the ASTN Tokenizer",
     'license': "ISC",
@@ -14,6 +14,7 @@ export const $: mproject.TProject = {
     'pubdependencies': d({
         "glo-pareto-common": {},
         "res-pareto-boolean": {},
+        "glo-astn-tokenconsumer": {},
     }),
     'type': ['library', {
         'main': {

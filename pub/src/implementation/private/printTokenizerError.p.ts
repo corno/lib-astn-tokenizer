@@ -1,4 +1,4 @@
-// import * as pl from "pareto-core-lib"
+// import * as pl from 'pareto-core-lib'
 
 // import * as inf from "./internal_interface"
 // import { printTokenizer2Error } from "./createTokenizer2"
