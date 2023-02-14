@@ -3,6 +3,7 @@ import * as pt from 'pareto-core-types'
 import { T   } from './types.generated'
 
 import * as mcommon from "glo-pareto-common"
+import * as mtc from "glo-astn-tokenconsumer"
 
 export type IPretokenHandler = ($: T.Pretoken, ) => void
 
@@ -11,7 +12,7 @@ export type IStringStreamConsumer = {
     'onEnd': () => void
 }
 
-export type ITokenHandler = ($: T.Token, ) => void
+export type ITokenHandler = ($: mtc.T.Token<T.TokenizerAnnotationData>, ) => void
 
 export type FConvertToCharacters = ($: mcommon.T.String,) => T.Characters
 

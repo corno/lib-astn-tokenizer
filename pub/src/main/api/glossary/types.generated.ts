@@ -1,6 +1,7 @@
 import * as pt from 'pareto-core-types'
 
 import * as mcommon from "glo-pareto-common"
+import * as mtc from "glo-astn-tokenconsumer"
 
 export namespace T {
     
@@ -479,4 +480,8 @@ export namespace T {
     export namespace TokenError {}
     
     export type TokenError = {}
+    
+    export namespace TokenizerAnnotationData {}
+    
+    export type TokenizerAnnotationData = {}
 }

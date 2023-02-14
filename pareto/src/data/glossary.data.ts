@@ -7,7 +7,7 @@ import {
     reference,
     boolean,
     typeReference,
-    dictionary, group, member, taggedUnion, types, func, data, interfaceReference, inf, method, number, type
+    dictionary, group, member, taggedUnion, types, func, data, interfaceReference, inf, method, number, type, parametrizedTypeReference
 } from "lib-pareto-typescript-project/dist/submodules/glossary/shorthands.p"
 
 import * as mglossary from "lib-pareto-typescript-project/dist/submodules/glossary"
@@ -17,51 +17,22 @@ const d = pr.wrapRawDictionary
 export const $: mglossary.T.Glossary<string> = {
     'imports': d({
         "common": "glo-pareto-common",
+        "tc": "glo-astn-tokenconsumer",
     }),
     'parameters': d({}),
     'types': d({
-        "Characters": type( array(number())),
-        "TokenError": type( group({
-            // "type": member(taggedUnion({
-            //     "unterminated block comment": group({}),
-            //     "found dangling slash at the end of the text": group({}),
-            //     "unterminated string": group({}),
-            //     // | ["found dangling slash", null]
-            //     // | ["expected hexadecimal digit", {
-            //     //     readonly "found": string
-            //     // }]
-            //     // | ["expected special character after escape slash", {
-            //     //     readonly "found": string
-            //     // }]  
-            // })),
-            // "location": member(reference("LocationInfo")),
-        })),
-        "PretokenError": type( group({
-            "type": member(taggedUnion({
-                "unterminated block comment": group({}),
-                "found dangling slash at the end of the text": group({}),
-                "unterminated string": group({}),
-                // | ["found dangling slash", null]
-                // | ["expected hexadecimal digit", {
-                //     readonly "found": string
-                // }]
-                // | ["expected special character after escape slash", {
-                //     readonly "found": string
-                // }]  
-            })),
-            "location": member(reference("LocationInfo")),
-        })),
-        "LineLocation": type( group({
+        "Characters": type(array(number())),
+        "LineLocation": type(group({
             //first line in document has value 1
             "line": member(number()),
             //first character on a line has value 1
             "character": member(number()),
         })),
-        "LocationInfo": type( group({
+        "LocationInfo": type(group({
             "absolutePosition": member(number()),
             "lineLocation": member(reference("LineLocation"))
         })),
-        "Pretoken": type( group({
+        "Pretoken": type(group({
             "type": member(taggedUnion({
                 "header start": group({
                 }),
@@ -90,7 +61,22 @@ export const $: mglossary.T.Glossary<string> = {
             })),
             "location": member(reference("LocationInfo"))
         })),
-        "PretokenizerConfigurationData": type( group({
+        "PretokenError": type(group({
+            "type": member(taggedUnion({
+                "unterminated block comment": group({}),
+                "found dangling slash at the end of the text": group({}),
+                "unterminated string": group({}),
+                // | ["found dangling slash", null]
+                // | ["expected hexadecimal digit", {
+                //     readonly "found": string
+                // }]
+                // | ["expected special character after escape slash", {
+                //     readonly "found": string
+                // }]  
+            })),
+            "location": member(reference("LocationInfo")),
+        })),
+        "PretokenizerConfigurationData": type(group({
             "location": member(group({
                 "absolutePositionStart": member(number()),
                 "firstLine": member(number()),
@@ -146,12 +132,12 @@ export const $: mglossary.T.Glossary<string> = {
             })),
 
         })),
-        "Range": type( group({
+        "Range": type(group({
             "start": member(reference("LocationInfo")),
             "length": member(number()),
             "size": member(reference("RangeSize")),
         })),
-        "RangeSize": type( taggedUnion({
+        "RangeSize": type(taggedUnion({
             "singe line": group({
                 "column offset": member(number()),
             }),
@@ -159,6 +145,24 @@ export const $: mglossary.T.Glossary<string> = {
                 "line offset": member(number()),
                 "column": member(number()),
             }),
+        })),
+        "TokenError": type(group({
+            // "type": member(taggedUnion({
+            //     "unterminated block comment": group({}),
+            //     "found dangling slash at the end of the text": group({}),
+            //     "unterminated string": group({}),
+            //     // | ["found dangling slash", null]
+            //     // | ["expected hexadecimal digit", {
+            //     //     readonly "found": string
+            //     // }]
+            //     // | ["expected special character after escape slash", {
+            //     //     readonly "found": string
+            //     // }]  
+            // })),
+            // "location": member(reference("LocationInfo")),
+        })),
+        "TokenizerAnnotationData": type(group({
+
         })),
     }),
     'interfaces': d({
@@ -169,7 +173,7 @@ export const $: mglossary.T.Glossary<string> = {
             }),
         }],
         "PretokenHandler": method(typeReference("Pretoken")),
-        "TokenHandler": method(typeReference("Token")),//REPLACE BY glo-pareto-tokenconsumer
+        "TokenHandler": method(parametrizedTypeReference("tc", { "Annotation": typeReference("TokenizerAnnotationData")}, "Token")),//REPLACE BY glo-pareto-tokenconsumer
     }),
     'functions': d({
         "Increment": func(typeReference("common", "Number"), null, null, data(typeReference("common", "Number"), false)),
