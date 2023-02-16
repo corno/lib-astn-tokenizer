@@ -5,13 +5,6 @@ import * as mtc from "glo-astn-tokenconsumer"
 
 export namespace T {
     
-    export namespace Characters {
-        
-        export type A = number
-    }
-    
-    export type Characters = pt.Array<number>
-    
     export namespace LineLocation {
         
         export type character = number
@@ -35,6 +28,25 @@ export namespace T {
         readonly 'absolutePosition': number
         readonly 'lineLocation': T.LineLocation
     }
+    
+    export namespace NonToken {
+        
+        export type block__comment = string
+        
+        export type line__comment = string
+        
+        export namespace newline {}
+        
+        export type newline = {}
+        
+        export type whitespace = string
+    }
+    
+    export type NonToken = 
+        | ['block comment', string]
+        | ['line comment', string]
+        | ['newline', {}]
+        | ['whitespace', string]
     
     export namespace Pretoken {
         
@@ -98,9 +110,14 @@ export namespace T {
             
             export type snippet = mcommon.T.String
             
-            export namespace structural {}
+            export namespace structural {
+                
+                export type _ltype = mtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+            }
             
-            export type structural = {}
+            export type structural = {
+                readonly 'type': mtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+            }
         }
         
         export type _ltype = 
@@ -116,7 +133,9 @@ export namespace T {
             | ['header start', {}]
             | ['newline', {}]
             | ['snippet', mcommon.T.String]
-            | ['structural', {}]
+            | ['structural', {
+                readonly 'type': mtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+            }]
     }
     
     export type Pretoken = {
@@ -134,7 +153,9 @@ export namespace T {
             | ['header start', {}]
             | ['newline', {}]
             | ['snippet', mcommon.T.String]
-            | ['structural', {}]
+            | ['structural', {
+                readonly 'type': mtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+            }]
     }
     
     export namespace PretokenError {
@@ -477,11 +498,44 @@ export namespace T {
             readonly 'column offset': number
         }]
     
-    export namespace TokenError {}
+    export namespace TokenError {
+        
+        export type location = T.LocationInfo
+        
+        export namespace _ltype {
+            
+            export namespace unclosed__token {}
+            
+            export type unclosed__token = {}
+            
+            export namespace unexpected__pretoken {}
+            
+            export type unexpected__pretoken = {}
+        }
+        
+        export type _ltype = 
+            | ['unclosed token', {}]
+            | ['unexpected pretoken', {}]
+    }
     
-    export type TokenError = {}
+    export type TokenError = {
+        readonly 'location': T.LocationInfo
+        readonly 'type': 
+            | ['unclosed token', {}]
+            | ['unexpected pretoken', {}]
+    }
     
-    export namespace TokenizerAnnotationData {}
+    export namespace TokenizerAnnotationData {
+        
+        export namespace nonTokens {
+            
+            export type A = T.NonToken
+        }
+        
+        export type nonTokens = pt.Array<T.NonToken>
+    }
     
-    export type TokenizerAnnotationData = {}
+    export type TokenizerAnnotationData = {
+        readonly 'nonTokens': pt.Array<T.NonToken>
+    }
 }

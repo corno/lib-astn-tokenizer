@@ -1,6 +1,3 @@
-// /* eslint
-//     complexity: off
-// */
 // import * as pl from 'pareto-core-lib'
 // import * as pw from 'pareto-core-raw'
 

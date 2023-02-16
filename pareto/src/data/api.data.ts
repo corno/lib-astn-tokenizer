@@ -25,6 +25,8 @@ export const $: mmoduleDefinition.T.ModuleDefinition = {
         'imports': d({
             //"common": "glo-pareto-common",
             "bool": "res-pareto-boolean",
+            "string": "res-pareto-string",
+            "tostring": "res-pareto-tostring",
         }),
         'algorithms': d({
             "createBoundPretokenizer": algorithm(definitionReference("Pretokenize"), constructor(null, {
@@ -32,13 +34,14 @@ export const $: mmoduleDefinition.T.ModuleDefinition = {
             })),
             "createPretokenizer": algorithm(definitionReference("PretokenizeCharacters"), constructor(typeReference("PretokenizerConfigurationData"), {
                 "onError": definitionReference("OnPretokenError"),
-                "convertToCharacters": definitionReference("ConvertToCharacters"),
-                "convertToString": definitionReference("ConvertToString"),
+                "convertToCharacters": definitionReference("string", {}, "ToCharacterArray"),
+                "convertToString": definitionReference("string", {}, "FromCharacterArray"),
                 "isEqual": definitionReference("bool", {}, "Equal"),
                 "increment": definitionReference("Increment"),
             })),
+            "createPretokenErrorMessage": algorithm(definitionReference("CreatePretokenErrorMessage")),
             "createTokenizer": algorithm(definitionReference("Tokenize"), constructor(null, {
-                "onError": definitionReference("OnTokenError"),
+                "arrayToString": definitionReference("tostring", {}, "GetArrayAsString")
             })),
         })
     },

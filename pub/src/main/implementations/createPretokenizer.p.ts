@@ -40,14 +40,14 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
         'type':
         | ['carriage return', {}]
         | ['line feed', {}]
-        'startLocation': api.TLocationInfo
+        'startLocation': api.T.LocationInfo
     }
 
     type SNoneContext = {
         'found':
         | ['nothing', {}]
         | ['newlineCharacter', SFoundNewlineCharacter]
-        | ['solidus', api.TLocationInfo]
+        | ['solidus', api.T.LocationInfo]
     }
 
     type SStringContext = {
@@ -88,7 +88,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
     }
 
     return ($, $i) => {
-        function createLocation(): api.TLocationInfo {
+        function createLocation(): api.T.LocationInfo {
             return {
                 'absolutePosition': $s.location.absolutePosition,
                 'lineLocation': {
@@ -97,19 +97,19 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                 }
             }
         }
-        function onError($: api.GPretokenError.Ptype) {
+        function onError($: api.T.PretokenError._ltype) {
             $d.onError({
                 'type': $,
                 'location': createLocation()
             })
         }
-        function onPretoken($: api.GPretoken.Ptype) {
+        function onPretoken($: api.T.Pretoken._ltype) {
             $i({
                 'type': $,
                 'location': createLocation()
             })
         }
-        function onStart($: api.GPretoken.Ptype.Obegin.Ptype) {
+        function onStart($: api.T.Pretoken._ltype.begin._ltype) {
             onPretoken(['begin', {
                 'type': $,
             }])
@@ -202,31 +202,28 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                             break
                         case 'line comment':
                             pl.cc($s.currentToken[1], ($s) => {
-
-                                pl.implementMe("@@@@")
+                                pl.implementMe("@@@@1")
                             })
                             break
                         case 'non wrapped string':
                             pl.cc($s.currentToken[1], ($s) => {
-                                pl.implementMe("@@@@")
-
+                                pl.implementMe("@@@@2")
                             })
                             break
                         case 'none':
                             pl.cc($s.currentToken[1], ($s) => {
-                                pl.implementMe("@@@@")
+                                pl.implementMe("@@@@3")
                                 $s.found
                             })
                             break
                         case 'whitespace':
                             pl.cc($s.currentToken[1], ($s) => {
-                                pl.implementMe("@@@@")
-
+                                pl.implementMe("@@@@4")
                             })
                             break
                         case 'wrapped string':
                             pl.cc($s.currentToken[1], ($s) => {
-                                pl.implementMe("@@@@")
+                                pl.implementMe("@@@@5")
                                 $s.foundNewlineCharacter
                                 $s.slashed
                                 $s.startCharacter
@@ -300,7 +297,7 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                         break
                     default: pl.au($s.currentToken[0])
                 }
-
+                $i.handler.onEnd(createLocation())
             }
         }
     }

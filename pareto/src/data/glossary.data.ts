@@ -7,7 +7,7 @@ import {
     reference,
     boolean,
     typeReference,
-    dictionary, group, member, taggedUnion, types, func, data, interfaceReference, inf, method, number, type, parametrizedTypeReference
+    dictionary, group, member, taggedUnion, types, func, data, interfaceReference, inf, method, number, type, parametrizedTypeReference, parametrizedInterfaceReference, parametrizedReference
 } from "lib-pareto-typescript-project/dist/submodules/glossary/shorthands.p"
 
 import * as mglossary from "lib-pareto-typescript-project/dist/submodules/glossary"
@@ -21,7 +21,6 @@ export const $: mglossary.T.Glossary<string> = {
     }),
     'parameters': d({}),
     'types': d({
-        "Characters": type(array(number())),
         "LineLocation": type(group({
             //first line in document has value 1
             "line": member(number()),
@@ -55,7 +54,7 @@ export const $: mglossary.T.Glossary<string> = {
                 "newline": group({
                 }),
                 "structural": group({
-                    //"type": member(reference("tc", "StructuralTokenType")),
+                    "type": member(parametrizedReference("tc", { "Annotation": typeReference("TokenizerAnnotationData") }, "StructuralTokenType")),
                 }),
                 "snippet": reference("common", "String"),
             })),
@@ -147,22 +146,24 @@ export const $: mglossary.T.Glossary<string> = {
             }),
         })),
         "TokenError": type(group({
-            // "type": member(taggedUnion({
-            //     "unterminated block comment": group({}),
-            //     "found dangling slash at the end of the text": group({}),
-            //     "unterminated string": group({}),
-            //     // | ["found dangling slash", null]
-            //     // | ["expected hexadecimal digit", {
-            //     //     readonly "found": string
-            //     // }]
-            //     // | ["expected special character after escape slash", {
-            //     //     readonly "found": string
-            //     // }]  
-            // })),
-            // "location": member(reference("LocationInfo")),
+            "type": member(taggedUnion({
+                "unexpected pretoken": group({
+
+                }),
+                "unclosed token": group({
+
+                }),
+            })),
+            "location": member(reference("LocationInfo")),
+        })),
+        "NonToken": type(taggedUnion({
+            "block comment": string(),
+            "line comment": string(),
+            "whitespace": string(),
+            "newline": group({}),
         })),
         "TokenizerAnnotationData": type(group({
-
+            "nonTokens": member(array(reference("NonToken"))),
         })),
     }),
     'interfaces': d({
@@ -172,17 +173,36 @@ export const $: mglossary.T.Glossary<string> = {
                 "onEnd": method(null),
             }),
         }],
-        "PretokenHandler": method(typeReference("Pretoken")),
-        "TokenHandler": method(parametrizedTypeReference("tc", { "Annotation": typeReference("TokenizerAnnotationData")}, "Token")),//REPLACE BY glo-pareto-tokenconsumer
+        "OnTokenError": method(typeReference("TokenError")),
+        "OnPretokenError": method(typeReference("PretokenError")),
+        "PretokenConsumer": ['group', {
+            'members': d({
+                "onData": method(typeReference("Pretoken")),
+                "onEnd": method(typeReference("LocationInfo")),
+            })
+        }],
+        "PretokenizerHandler": ['group', {
+            'members': d({
+                "handler": ['reference', interfaceReference("PretokenConsumer")],
+                "onError": ['reference', interfaceReference("OnPretokenError")],
+            })
+        }],
+        //"TokenHandler": method(parametrizedTypeReference("tc", { "Annotation": typeReference("TokenizerAnnotationData")}, "Token")),//REPLACE BY glo-pareto-tokenconsumer
+        "TokenizerHandler": ['group', {
+            'members': d({
+                "handler": ['reference', parametrizedInterfaceReference("tc", { "Annotation": typeReference("TokenizerAnnotationData") }, "TokenConsumer")],
+                "onError": ['reference', interfaceReference("OnTokenError")],
+            })
+        }],
+
+
     }),
     'functions': d({
         "Increment": func(typeReference("common", "Number"), null, null, data(typeReference("common", "Number"), false)),
+        "CreatePretokenErrorMessage": func(typeReference("PretokenError"), null, null, data(typeReference("common", "String"), false)),
         "OnPretokenError": func(typeReference("PretokenError"), null, null, null),
-        "OnTokenError": func(typeReference("TokenError"), null, null, null),
-        "ConvertToCharacters": func(typeReference("common", "String"), null, null, data(typeReference("Characters"), false)),
-        "ConvertToString": func(typeReference("Characters"), null, null, data(typeReference("common", "String"), false)),
-        "PretokenizeCharacters": func(typeReference("common", "Null"), null, interfaceReference("PretokenHandler"), inf(interfaceReference("StringStreamConsumer"))),
-        "Pretokenize": func(typeReference("common", "Null"), null, interfaceReference("PretokenHandler"), inf(interfaceReference("StringStreamConsumer"))),
-        "Tokenize": func(typeReference("common", "Null"), null, interfaceReference("TokenHandler"), inf(interfaceReference("PretokenHandler"))),
+        "PretokenizeCharacters": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("StringStreamConsumer"))),
+        "Pretokenize": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("StringStreamConsumer"))),
+        "Tokenize": func(typeReference("common", "Null"), null, interfaceReference("TokenizerHandler"), inf(interfaceReference("PretokenConsumer"))),
     }),
 }

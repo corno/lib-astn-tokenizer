@@ -18,15 +18,69 @@ export const $$: api.CgetTestSet = ($) => {
         }
     })
 
-    const tok2 = tok(null, ($) => {
-        // switch ($.type[0]) {
-        //     case '':
-        //         pl.cc($.t[1], ($) => {
+    const tok2 = tok(null, {
+        'handler': {
+            'onData': ($) => {
+                switch ($.type[0]) {
+                    case 'begin':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
+                        })
+                        break
+                    case 'end':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
 
-        //         })
-        //         break
-        //     default: pl.au($.t[0])
-        // }
+                        })
+                        break
+                    case 'header start':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
+
+                        })
+                        break
+                    case 'header start':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
+
+                        })
+                        break
+                    case 'newline':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
+
+                        })
+                        break
+                    case 'snippet':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
+
+                        })
+                        break
+                    case 'structural':
+                        pl.cc($.type[1], ($) => {
+                            pl.logDebugMessage("XXX")
+
+                        })
+                        break
+                    default: pl.au($.type[0])
+                }
+                // switch ($.type[0]) {
+                //     case '':
+                //         pl.cc($.t[1], ($) => {
+
+                //         })
+                //         break
+                //     default: pl.au($.t[0])
+                // }
+            },
+            'onEnd': ($) => {
+                pl.logDebugMessage("END")
+            },
+        },
+        'onError': ($) => {
+            pl.logDebugMessage(pub.$a.createPretokenErrorMessage($))
+        }
     })
 
     tok2.onData("FOOOO")
@@ -69,7 +123,7 @@ export const $$: api.CgetTestSet = ($) => {
     // pt("FOO")
 
 
-    const builder = pm.createUnsafeDictionaryBuilder<mtest.TTestElement>()
+    const builder = pm.createUnsafeDictionaryBuilder<mtest.T.TestElement>()
     function createTest(name: string, actual: string, expected: string) {
         builder.add(name, {
             type: ["test", {

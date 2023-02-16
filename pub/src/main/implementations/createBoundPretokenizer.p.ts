@@ -4,6 +4,7 @@ import * as pl from 'pareto-core-lib'
 import * as api from "../api"
 
 import * as mbool from "res-pareto-boolean"
+import * as mstring from "res-pareto-string"
 
 import { $$ as pretokenizer } from "./createPretokenizer.p"
 
@@ -77,8 +78,8 @@ export const $$: api.CcreateBoundPretokenizer = ($d) => {
         },
         {
             onError: $d.onError,
-            convertToCharacters: y,
-            convertToString: y,
+            convertToCharacters: mstring.$a.toCharacterArray,
+            convertToString: mstring.$a.fromCharacterArray,
             isEqual: mbool.$a.equal,
             increment: ($) => $ + 1
         }

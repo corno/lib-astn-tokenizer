@@ -11,9 +11,11 @@ export const $: mproject.T.Project = {
     'description': "the ASTN Tokenizer",
     'license': "ISC",
 
-    'pubdependencies': d({
+    'dependencies': d({
         "glo-pareto-common": {},
         "res-pareto-boolean": {},
+        "res-pareto-tostring": {},
+        "res-pareto-string": {},
         "glo-astn-tokenconsumer": {},
     }),
     'type': ['library', {
@@ -26,6 +28,13 @@ export const $: mproject.T.Project = {
         'test': {
             'dependencies': d({
             }),
+            'glossary': {
+                'functions': d({}),
+                'imports': d({}),
+                'parameters': d({}),
+                'types': d({}),
+                'interfaces': d({}),
+            },
         }
     }],
 }

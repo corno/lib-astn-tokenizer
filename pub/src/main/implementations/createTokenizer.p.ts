@@ -4,6 +4,8 @@ import * as ps from 'pareto-core-state'
 
 import * as api from "../api"
 
+import * as mtc from "glo-astn-tokenconsumer"
+
 export const $$: api.CcreateTokenizer = ($d) => {
     type Optional<T> =
         | [false]
@@ -35,6 +37,7 @@ export const $$: api.CcreateTokenizer = ($d) => {
 
 
     type SState = {
+        'nonTokens': ps.ArrayBuilder<api.T.NonToken>
         'currentToken': Optional<SCurrentToken>
         'lineIsDirty': boolean
     }
@@ -42,135 +45,241 @@ export const $$: api.CcreateTokenizer = ($d) => {
     return ($, $i) => {
         const $s: SState = {
             'currentToken': [false],
+            'nonTokens': ps.createArrayBuilder(),
             'lineIsDirty': false,
         }
 
-        function onToken($: api.TToken) {
+        function flushAnnotation(): api.T.TokenizerAnnotationData {
+            const nt = $s.nonTokens.getArray()
+            $s.nonTokens = ps.createArrayBuilder()
+            return {
+                'nonTokens': nt
+            }
+        }
+
+        function onToken($: mtc.T.Token<api.T.TokenizerAnnotationData>) {
+            $i.handler.onToken({
+                'annotation': flushAnnotation(),
+                'token': $,
+            })
+            $s.currentToken = [false]
+        }
+        function onNonToken($: api.T.NonToken) {
+            $s.nonTokens.push($)
+
 
         }
-        return ($) => {
-            const makesDirty = pl.cc($.type, ($) => {
+        return {
+            'onData': ($) => {
+                const makesDirty = pl.cc($.type, ($) => {
 
-                switch ($[0]) {
-                    case 'newline':
-                        return pl.cc($[1], ($) => {
-                            return false //correct?
-                        })
-                    case 'snippet':
-                        return pl.cc($[1], ($) => {
-                            return false //correct?
-                        })
-                    case 'begin':
-                        return pl.cc($[1], ($) => {
-                            if ($.type[0] === 'whitespace') {
+                    switch ($[0]) {
+                        case 'newline':
+                            return pl.cc($[1], ($) => {
                                 return false //correct?
-                            } else {
-                                return true
+                            })
+                        case 'snippet':
+                            return pl.cc($[1], ($) => {
+                                return false //correct?
+                            })
+                        case 'begin':
+                            return pl.cc($[1], ($) => {
+                                if ($.type[0] === 'whitespace') {
+                                    return false //correct?
+                                } else {
+                                    return true
+                                }
+                            })
+                        // case 'whitespace end':
+                        //     return pl.cc($[1], ($) => {
+                        //         return false //correct?
+                        //     })
+                        default: return true
+                    }
+                })
+                handleOptional(
+                    $s.currentToken,
+                    ($s) => {
+                        function pushSnippet($: string) {
+                            $s.stringBuilder.push($)
+                        }
+                        function flushString(): string {
+                            const str = $d.arrayToString($s.stringBuilder.getArray())
+                            //$s.stringBuilder = ps.createArrayBuilder()
+                            return str
+                        }
+                        pl.cc($s.type, ($s) => {
+                            switch ($.type[0]) {
+                                case 'end':
+                                    pl.cc($.type[1], ($) => {
+                                        function doEnd() {
+                                            switch ($s[0]) {
+                                                case 'block comment':
+                                                    pl.cc($s[1], ($s) => {
+                                                        onNonToken(['block comment', flushString()])
+    
+                                                    })
+                                                    break
+                                                case 'line comment':
+                                                    pl.cc($s[1], ($s) => {
+                                                        onNonToken(['line comment', flushString()])
+    
+                                                    })
+                                                    break
+                                                case 'non wrapped string':
+                                                    pl.cc($s[1], ($s) => {
+                                                        onToken(['simple string', {
+                                                            'value': flushString(),
+                                                            'wrapping': ['none', {}],
+                                                        }])
+    
+                                                    })
+                                                    break
+                                                case 'whitespace':
+                                                    pl.cc($s[1], ($s) => {
+                                                        onNonToken(['whitespace', flushString()])
+    
+                                                    })
+                                                    break
+                                                case 'wrapped string':
+                                                    pl.cc($s[1], ($s) => {
+                                                        onToken(['simple string', {
+                                                            'value': flushString(),
+                                                            'wrapping': ['none', {}],
+                                                        }])
+    
+    
+                                                    })
+                                                    break
+                                                default: pl.au($s[0])
+                                            }
+
+                                        }
+                                        doEnd()
+
+                                    })
+                                    break
+                                case 'snippet':
+                                    pl.cc($.type[1], ($) => {
+                                        pushSnippet($)
+                                    })
+                                    break
+                                default: {
+                                    pl.panic(`unexpected pretoken '${$.type[0]}'`)
+                                }
                             }
                         })
-                    // case 'whitespace end':
-                    //     return pl.cc($[1], ($) => {
-                    //         return false //correct?
-                    //     })
-                    default: return true
-                }
-            })
-            handleOptional(
-                $s.currentToken,
-                ($s) => {
-                    function pushSnippet($: string) {
-                        $s.stringBuilder.push($)
-                    }
-                    pl.cc($s.type, ($s) => {
-                        switch ($.type[0]) {
-                            case 'end':
-                                pl.cc($.type[1], ($) => {
-                                    switch ($s[0]) {
-                                        case 'block comment':
-                                            pl.cc($s[1], ($s) => {
-                                                onToken([])
 
+                    },
+                    () => {
+                        const location = $.location
+                        switch ($.type[0]) {
+                            case 'begin':
+                                pl.cc($.type[1], ($) => {
+                                    switch ($.type[0]) {
+                                        case 'block comment':
+                                            pl.cc($.type[1], ($) => {
+                                                $s.currentToken = [true, {
+                                                    'type': ['block comment', {}],
+                                                    'stringBuilder': ps.createArrayBuilder(),
+                                                }]
                                             })
                                             break
                                         case 'line comment':
-                                            pl.cc($s[1], ($s) => {
-                                                onToken([])
-
+                                            pl.cc($.type[1], ($) => {
+                                                $s.currentToken = [true, {
+                                                    'type': ['line comment', {}],
+                                                    'stringBuilder': ps.createArrayBuilder(),
+                                                }]
                                             })
                                             break
                                         case 'non wrapped string':
-                                            pl.cc($s[1], ($s) => {
-                                                onToken([])
-
+                                            pl.cc($.type[1], ($) => {
+                                                $s.currentToken = [true, {
+                                                    'type': ['non wrapped string', {}],
+                                                    'stringBuilder': ps.createArrayBuilder(),
+                                                }]
                                             })
                                             break
                                         case 'whitespace':
-                                            pl.cc($s[1], ($s) => {
-                                                onToken([])
-
+                                            pl.cc($.type[1], ($) => {
+                                                $s.currentToken = [true, {
+                                                    'type': ['whitespace', {}],
+                                                    'stringBuilder': ps.createArrayBuilder(),
+                                                }]
                                             })
                                             break
                                         case 'wrapped string':
-                                            pl.cc($s[1], ($s) => {
-                                                onToken([])
-
+                                            pl.cc($.type[1], ($) => {
+                                                $s.currentToken = [true, {
+                                                    'type': ['wrapped string', {}],
+                                                    'stringBuilder': ps.createArrayBuilder(),
+                                                }]
                                             })
                                             break
-                                        default: pl.au($s[0])
+                                        default: pl.au($.type[0])
                                     }
-
+                                })
+                                break
+                            case 'header start':
+                                pl.cc($.type[1], ($) => {
+                                    onToken(['header start', {}])
+                                })
+                                break
+                            case 'newline':
+                                pl.cc($.type[1], ($) => {
+                                    onNonToken(['newline', {}])
                                 })
                                 break
                             case 'snippet':
                                 pl.cc($.type[1], ($) => {
-                                    pushSnippet($)
+                                    $i.onError({
+                                        'type': ['unexpected pretoken', {
+
+                                        }],
+                                        'location': location,
+                                    })
+                                })
+                                break
+                            case 'end':
+                                pl.cc($.type[1], ($) => {
+                                    $i.onError({
+                                        'type': ['unexpected pretoken', {
+
+                                        }],
+                                        'location': location,
+                                    })
+                                })
+                                break
+                            case 'structural':
+                                pl.cc($.type[1], ($) => {
+                                    onToken(['structural', $])
                                 })
                                 break
                             default: {
-                                pl.panic(`unexpected pretoken '${$.type[0]}'`)
+                                pl.au($.type[1])
                             }
                         }
-                    })
-
-                },
-                () => {
-                    switch ($.type[0]) {
-                        case 'begin':
-                            pl.cc($.type[1], ($) => {
-                                pl.implementMe("@@@")
-                            })
-                            break
-                        case 'header start':
-                            pl.cc($.type[1], ($) => {
-                                pl.implementMe("@@@")
-
-                            })
-                            break
-                        case 'newline':
-                            pl.cc($.type[1], ($) => {
-                                pl.implementMe("@@@")
-
-                            })
-                            break
-                        case 'structural':
-                            pl.cc($.type[1], ($) => {
-                                // switch ($.type[0]) {
-                                //     case '': 
-                                //         pl.cc($.type[1], ($) => {
-                                          
-                                //         })
-                                //         break
-                                //     default: pl.au($.type[0])
-                                // }
-                                pl.implementMe("@@@")
-                            })
-                            break
-                        default: {
-                            pl.panic(`unexpected pretoken '${$.type[0]}'`)
-                        }
                     }
-                }
-            )
+                )
+            },
+            'onEnd': ($) => {
+                handleOptional(
+                    $s.currentToken,
+                    ($s) => {
+                        $i.onError({
+                            'type': ['unclosed token', {
+
+                            }],
+                            'location': $
+                        })
+                    },
+                    () => {
+
+                    }
+                )
+                $i.handler.onEnd(flushAnnotation())
+            }
         }
     }
 }
