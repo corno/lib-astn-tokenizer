@@ -158,14 +158,28 @@ export const $$: api.CcreatePretokenizer = ($c, $d) => {
                                 location.foundNewlineCharacter = [false]
                             },
                             () => {
-                                location.character = $d.increment(location.character)
+                                if ($d.isEqual({
+                                    'this': $,
+                                    'that': $c.characters.whitespace.tab
+                                })) {
+                                    //tab character
+                                    location.character = $d.add([
+                                        location.character,
+                                        $c.location['spaces per tab'],
+                                    ])
+                                } else {
+                                    //other character
+                                    location.character = $d.increment(location.character)
+                                }
                                 if ($d.isEqual({ 'this': $, 'that': $c.characters.whitespace['carriage return'] })) {
+                                    // /r
                                     location.foundNewlineCharacter = [true, {
                                         'startLocation': createLocation(),
                                         'type': ['carriage return', {}],
                                     }]
                                 } else {
                                     if ($d.isEqual({ 'this': $, 'that': $c.characters.whitespace['line feed'] })) {
+                                        // /n
                                         location.foundNewlineCharacter = [true, {
                                             'startLocation': createLocation(),
                                             'type': ['line feed', {}],

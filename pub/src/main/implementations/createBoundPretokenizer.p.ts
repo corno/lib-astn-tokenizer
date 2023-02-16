@@ -4,6 +4,7 @@ import * as pl from 'pareto-core-lib'
 import * as api from "../api"
 
 import * as mbool from "res-pareto-boolean"
+import * as marith from "res-pareto-arithmetic"
 import * as mstring from "res-pareto-string"
 
 import { $$ as pretokenizer } from "./createPretokenizer.p"
@@ -23,6 +24,7 @@ export const $$: api.CcreateBoundPretokenizer = ($d) => {
     return pretokenizer(
         {
             'location': {
+                'spaces per tab': 4,
                 'absolutePositionStart': 0,
                 'firstCharacter': 1,
                 'firstLine': 1,
@@ -81,7 +83,8 @@ export const $$: api.CcreateBoundPretokenizer = ($d) => {
             convertToCharacters: mstring.$a.toCharacterArray,
             convertToString: mstring.$a.fromCharacterArray,
             isEqual: mbool.$a.equal,
-            increment: ($) => $ + 1
+            increment: ($) => $ + 1,
+            add: marith.$a.add,
         }
     )
 }

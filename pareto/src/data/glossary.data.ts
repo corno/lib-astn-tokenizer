@@ -77,6 +77,7 @@ export const $: mglossary.T.Glossary<string> = {
         })),
         "PretokenizerConfigurationData": type(group({
             "location": member(group({
+                "spaces per tab": member(number()),
                 "absolutePositionStart": member(number()),
                 "firstLine": member(number()),
                 "firstCharacter": member(number()),

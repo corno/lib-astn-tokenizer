@@ -24,6 +24,7 @@ export const $: mmoduleDefinition.T.ModuleDefinition = {
     'api': {
         'imports': d({
             //"common": "glo-pareto-common",
+            "arithmetic": "res-pareto-arithmetic",
             "bool": "res-pareto-boolean",
             "string": "res-pareto-string",
             "tostring": "res-pareto-tostring",
@@ -38,6 +39,7 @@ export const $: mmoduleDefinition.T.ModuleDefinition = {
                 "convertToString": definitionReference("string", {}, "FromCharacterArray"),
                 "isEqual": definitionReference("bool", {}, "Equal"),
                 "increment": definitionReference("Increment"),
+                "add": definitionReference("arithmetic", {}, "Add"),
             })),
             "createPretokenErrorMessage": algorithm(definitionReference("CreatePretokenErrorMessage")),
             "createTokenizer": algorithm(definitionReference("Tokenize"), constructor(null, {

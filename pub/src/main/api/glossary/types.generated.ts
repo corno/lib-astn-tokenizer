@@ -386,12 +386,15 @@ export namespace T {
             export type firstCharacter = number
             
             export type firstLine = number
+            
+            export type spaces__per__tab = number
         }
         
         export type location = {
             readonly 'absolutePositionStart': number
             readonly 'firstCharacter': number
             readonly 'firstLine': number
+            readonly 'spaces per tab': number
         }
     }
     
@@ -447,6 +450,7 @@ export namespace T {
             readonly 'absolutePositionStart': number
             readonly 'firstCharacter': number
             readonly 'firstLine': number
+            readonly 'spaces per tab': number
         }
     }
     

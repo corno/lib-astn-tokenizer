@@ -13,6 +13,7 @@ export const $: mproject.T.Project = {
 
     'dependencies': d({
         "glo-pareto-common": {},
+        "res-pareto-arithmetic": {},
         "res-pareto-boolean": {},
         "res-pareto-tostring": {},
         "res-pareto-string": {},
