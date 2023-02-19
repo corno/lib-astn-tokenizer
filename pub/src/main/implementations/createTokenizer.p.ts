@@ -25,13 +25,15 @@ export const $$: api.CcreateTokenizer = ($d) => {
         }
     }
 
-    type SCurrentToken = {
-        'type':
+    type SCurrentTokenType =
         | ['block comment', {}]
         | ['line comment', {}]
         | ['non wrapped string', {}]
         | ['wrapped string', {}]
         | ['whitespace', {}]
+
+    type SCurrentToken = {
+        'type': SCurrentTokenType
         'stringBuilder': ps.ArrayBuilder<string>
     }
 
@@ -117,13 +119,13 @@ export const $$: api.CcreateTokenizer = ($d) => {
                                                 case 'block comment':
                                                     pl.cc($s[1], ($s) => {
                                                         onNonToken(['block comment', flushString()])
-    
+
                                                     })
                                                     break
                                                 case 'line comment':
                                                     pl.cc($s[1], ($s) => {
                                                         onNonToken(['line comment', flushString()])
-    
+
                                                     })
                                                     break
                                                 case 'non wrapped string':
@@ -132,13 +134,13 @@ export const $$: api.CcreateTokenizer = ($d) => {
                                                             'value': flushString(),
                                                             'wrapping': ['none', {}],
                                                         }])
-    
+
                                                     })
                                                     break
                                                 case 'whitespace':
                                                     pl.cc($s[1], ($s) => {
                                                         onNonToken(['whitespace', flushString()])
-    
+
                                                     })
                                                     break
                                                 case 'wrapped string':
@@ -147,8 +149,8 @@ export const $$: api.CcreateTokenizer = ($d) => {
                                                             'value': flushString(),
                                                             'wrapping': ['none', {}],
                                                         }])
-    
-    
+
+
                                                     })
                                                     break
                                                 default: pl.au($s[0])
@@ -176,49 +178,34 @@ export const $$: api.CcreateTokenizer = ($d) => {
                         switch ($.type[0]) {
                             case 'begin':
                                 pl.cc($.type[1], ($) => {
-                                    switch ($.type[0]) {
-                                        case 'block comment':
-                                            pl.cc($.type[1], ($) => {
-                                                $s.currentToken = [true, {
-                                                    'type': ['block comment', {}],
-                                                    'stringBuilder': ps.createArrayBuilder(),
-                                                }]
-                                            })
-                                            break
-                                        case 'line comment':
-                                            pl.cc($.type[1], ($) => {
-                                                $s.currentToken = [true, {
-                                                    'type': ['line comment', {}],
-                                                    'stringBuilder': ps.createArrayBuilder(),
-                                                }]
-                                            })
-                                            break
-                                        case 'non wrapped string':
-                                            pl.cc($.type[1], ($) => {
-                                                $s.currentToken = [true, {
-                                                    'type': ['non wrapped string', {}],
-                                                    'stringBuilder': ps.createArrayBuilder(),
-                                                }]
-                                            })
-                                            break
-                                        case 'whitespace':
-                                            pl.cc($.type[1], ($) => {
-                                                $s.currentToken = [true, {
-                                                    'type': ['whitespace', {}],
-                                                    'stringBuilder': ps.createArrayBuilder(),
-                                                }]
-                                            })
-                                            break
-                                        case 'wrapped string':
-                                            pl.cc($.type[1], ($) => {
-                                                $s.currentToken = [true, {
-                                                    'type': ['wrapped string', {}],
-                                                    'stringBuilder': ps.createArrayBuilder(),
-                                                }]
-                                            })
-                                            break
-                                        default: pl.au($.type[0])
-                                    }
+                                    $s.currentToken = [true, {
+                                        'type': pl.cc($.type, ($) => {
+                                            switch ($[0]) {
+                                                case 'block comment':
+                                                    return pl.cc($[1], ($) => {
+                                                        return ['block comment', {}]
+                                                    })
+                                                case 'line comment':
+                                                    return pl.cc($[1], ($) => {
+                                                        return ['line comment', {}]
+                                                    })
+                                                case 'non wrapped string':
+                                                    return pl.cc($[1], ($) => {
+                                                        return ['non wrapped string', {}]
+                                                    })
+                                                case 'whitespace':
+                                                    return pl.cc($[1], ($) => {
+                                                        return ['whitespace', {}]
+                                                    })
+                                                case 'wrapped string':
+                                                    return pl.cc($[1], ($) => {
+                                                        return ['wrapped string', {}]
+                                                    })
+                                                default: return pl.au($[0])
+                                            }
+                                        }),
+                                        'stringBuilder': ps.createArrayBuilder(),
+                                    }]
                                 })
                                 break
                             case 'header start':
