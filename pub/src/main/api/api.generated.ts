@@ -1,30 +1,30 @@
 import * as pt from 'pareto-core-types'
 
-import * as glo from "./glossary"
+import * as gglo from "./glossary"
 
-import * as marithmetic from "res-pareto-arithmetic"
-import * as mbool from "res-pareto-boolean"
-import * as mstring from "res-pareto-string"
-import * as mtostring from "res-pareto-tostring"
+import * as garithmetic from "res-pareto-arithmetic"
+import * as gbool from "res-pareto-boolean"
+import * as gstring from "res-pareto-string"
+import * as gtostring from "res-pareto-tostring"
 
 export type CcreateBoundPretokenizer = ($d: {
-    readonly 'onError': glo.FOnPretokenError
-}) => glo.FPretokenize
+    readonly 'onError': gglo.FOnPretokenError
+}) => gglo.FPretokenize
 
-export type CcreatePretokenErrorMessage = glo.FCreatePretokenErrorMessage
+export type CcreatePretokenErrorMessage = gglo.FCreatePretokenErrorMessage
 
-export type CcreatePretokenizer = ($: glo.T.PretokenizerConfigurationData, $d: {
-    readonly 'add': marithmetic.FAdd
-    readonly 'convertToCharacters': mstring.FToCharacterArray
-    readonly 'convertToString': mstring.FFromCharacterArray
-    readonly 'increment': glo.FIncrement
-    readonly 'isEqual': mbool.FEqual
-    readonly 'onError': glo.FOnPretokenError
-}) => glo.FPretokenizeCharacters
+export type CcreatePretokenizer = ($: gglo.T.PretokenizerConfigurationData, $d: {
+    readonly 'add': garithmetic.FAdd
+    readonly 'convertToCharacters': gstring.FToCharacterArray
+    readonly 'convertToString': gstring.FFromCharacterArray
+    readonly 'increment': gglo.FIncrement
+    readonly 'isEqual': gbool.FEqual
+    readonly 'onError': gglo.FOnPretokenError
+}) => gglo.FPretokenizeCharacters
 
 export type CcreateTokenizer = ($d: {
-    readonly 'arrayToString': mtostring.FGetArrayAsString
-}) => glo.FTokenize
+    readonly 'arrayToString': gtostring.FGetArrayAsString
+}) => gglo.FTokenize
 
 export type API = {
     createBoundPretokenizer: CcreateBoundPretokenizer

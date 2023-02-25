@@ -2,8 +2,8 @@ import * as pt from 'pareto-core-types'
 
 import { T   } from './types.generated'
 
-import * as mcommon from "glo-pareto-common"
-import * as mtc from "glo-astn-tokenconsumer"
+import * as gcommon from "glo-pareto-common"
+import * as gtc from "glo-astn-tokenconsumer"
 
 export type IOnPretokenError = ($: T.PretokenError, ) => void
 
@@ -20,23 +20,23 @@ export type IPretokenizerHandler = {
 }
 
 export type IStringStreamConsumer = {
-    'onData': ($: mcommon.T.String, ) => void
+    'onData': ($: gcommon.T.String, ) => void
     'onEnd': () => void
 }
 
 export type ITokenizerHandler = {
-    'handler': mtc.ITokenConsumer<T.TokenizerAnnotationData>
+    'handler': gtc.ITokenConsumer<T.TokenizerAnnotationData>
     'onError': IOnTokenError
 }
 
-export type FCreatePretokenErrorMessage = ($: T.PretokenError,) => mcommon.T.String
+export type FCreatePretokenErrorMessage = ($: T.PretokenError,) => gcommon.T.String
 
-export type FIncrement = ($: mcommon.T.Number,) => mcommon.T.Number
+export type FIncrement = ($: gcommon.T.Number,) => gcommon.T.Number
 
 export type FOnPretokenError = ($: T.PretokenError,) => void
 
-export type FPretokenize = ($: mcommon.T.Null, $i: IPretokenizerHandler,) => IStringStreamConsumer
+export type FPretokenize = ($: gcommon.T.Null, $i: IPretokenizerHandler,) => IStringStreamConsumer
 
-export type FPretokenizeCharacters = ($: mcommon.T.Null, $i: IPretokenizerHandler,) => IStringStreamConsumer
+export type FPretokenizeCharacters = ($: gcommon.T.Null, $i: IPretokenizerHandler,) => IStringStreamConsumer
 
-export type FTokenize = ($: mcommon.T.Null, $i: ITokenizerHandler,) => IPretokenConsumer
+export type FTokenize = ($: gcommon.T.Null, $i: ITokenizerHandler,) => IPretokenConsumer
