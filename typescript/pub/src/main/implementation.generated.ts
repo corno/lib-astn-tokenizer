@@ -1,4 +1,4 @@
-import { API } from "./api"
+import { API } from "./definition/api.generated"
 import { $$ as icreateBoundPretokenizer } from "./implementations/createBoundPretokenizer.p"
 import { $$ as icreatePretokenErrorMessage } from "./implementations/createPretokenErrorMessage.p"
 import { $$ as icreatePretokenizer } from "./implementations/createPretokenizer.p"

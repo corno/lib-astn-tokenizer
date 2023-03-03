@@ -37,7 +37,7 @@ export namespace T {
         
         export namespace newline {}
         
-        export type newline = {}
+        export type newline = null
         
         export type whitespace = string
     }
@@ -45,7 +45,7 @@ export namespace T {
     export type NonToken = 
         | ['block comment', string]
         | ['line comment', string]
-        | ['newline', {}]
+        | ['newline', null]
         | ['whitespace', string]
     
     export namespace Pretoken {
@@ -60,53 +60,53 @@ export namespace T {
                     
                     export namespace block__comment {}
                     
-                    export type block__comment = {}
+                    export type block__comment = null
                     
                     export namespace line__comment {}
                     
-                    export type line__comment = {}
+                    export type line__comment = null
                     
                     export namespace non__wrapped__string {}
                     
-                    export type non__wrapped__string = {}
+                    export type non__wrapped__string = null
                     
                     export namespace whitespace {}
                     
-                    export type whitespace = {}
+                    export type whitespace = null
                     
                     export namespace wrapped__string {}
                     
-                    export type wrapped__string = {}
+                    export type wrapped__string = null
                 }
                 
                 export type _ltype = 
-                    | ['block comment', {}]
-                    | ['line comment', {}]
-                    | ['non wrapped string', {}]
-                    | ['whitespace', {}]
-                    | ['wrapped string', {}]
+                    | ['block comment', null]
+                    | ['line comment', null]
+                    | ['non wrapped string', null]
+                    | ['whitespace', null]
+                    | ['wrapped string', null]
             }
             
             export type begin = {
                 readonly 'type': 
-                    | ['block comment', {}]
-                    | ['line comment', {}]
-                    | ['non wrapped string', {}]
-                    | ['whitespace', {}]
-                    | ['wrapped string', {}]
+                    | ['block comment', null]
+                    | ['line comment', null]
+                    | ['non wrapped string', null]
+                    | ['whitespace', null]
+                    | ['wrapped string', null]
             }
             
             export namespace end {}
             
-            export type end = {}
+            export type end = null
             
             export namespace header__start {}
             
-            export type header__start = {}
+            export type header__start = null
             
             export namespace newline {}
             
-            export type newline = {}
+            export type newline = null
             
             export type snippet = gcommon.T.String
             
@@ -123,15 +123,15 @@ export namespace T {
         export type _ltype = 
             | ['begin', {
                 readonly 'type': 
-                    | ['block comment', {}]
-                    | ['line comment', {}]
-                    | ['non wrapped string', {}]
-                    | ['whitespace', {}]
-                    | ['wrapped string', {}]
+                    | ['block comment', null]
+                    | ['line comment', null]
+                    | ['non wrapped string', null]
+                    | ['whitespace', null]
+                    | ['wrapped string', null]
             }]
-            | ['end', {}]
-            | ['header start', {}]
-            | ['newline', {}]
+            | ['end', null]
+            | ['header start', null]
+            | ['newline', null]
             | ['snippet', gcommon.T.String]
             | ['structural', {
                 readonly 'type': gtc.T.StructuralTokenType<T.TokenizerAnnotationData>
@@ -143,15 +143,15 @@ export namespace T {
         readonly 'type': 
             | ['begin', {
                 readonly 'type': 
-                    | ['block comment', {}]
-                    | ['line comment', {}]
-                    | ['non wrapped string', {}]
-                    | ['whitespace', {}]
-                    | ['wrapped string', {}]
+                    | ['block comment', null]
+                    | ['line comment', null]
+                    | ['non wrapped string', null]
+                    | ['whitespace', null]
+                    | ['wrapped string', null]
             }]
-            | ['end', {}]
-            | ['header start', {}]
-            | ['newline', {}]
+            | ['end', null]
+            | ['header start', null]
+            | ['newline', null]
             | ['snippet', gcommon.T.String]
             | ['structural', {
                 readonly 'type': gtc.T.StructuralTokenType<T.TokenizerAnnotationData>
@@ -166,29 +166,29 @@ export namespace T {
             
             export namespace found__dangling__slash__at__the__end__of__the__text {}
             
-            export type found__dangling__slash__at__the__end__of__the__text = {}
+            export type found__dangling__slash__at__the__end__of__the__text = null
             
             export namespace unterminated__block__comment {}
             
-            export type unterminated__block__comment = {}
+            export type unterminated__block__comment = null
             
             export namespace unterminated__string {}
             
-            export type unterminated__string = {}
+            export type unterminated__string = null
         }
         
         export type _ltype = 
-            | ['found dangling slash at the end of the text', {}]
-            | ['unterminated block comment', {}]
-            | ['unterminated string', {}]
+            | ['found dangling slash at the end of the text', null]
+            | ['unterminated block comment', null]
+            | ['unterminated string', null]
     }
     
     export type PretokenError = {
         readonly 'location': T.LocationInfo
         readonly 'type': 
-            | ['found dangling slash at the end of the text', {}]
-            | ['unterminated block comment', {}]
-            | ['unterminated string', {}]
+            | ['found dangling slash at the end of the text', null]
+            | ['unterminated block comment', null]
+            | ['unterminated string', null]
     }
     
     export namespace PretokenizerConfigurationData {
@@ -510,23 +510,23 @@ export namespace T {
             
             export namespace unclosed__token {}
             
-            export type unclosed__token = {}
+            export type unclosed__token = null
             
             export namespace unexpected__pretoken {}
             
-            export type unexpected__pretoken = {}
+            export type unexpected__pretoken = null
         }
         
         export type _ltype = 
-            | ['unclosed token', {}]
-            | ['unexpected pretoken', {}]
+            | ['unclosed token', null]
+            | ['unexpected pretoken', null]
     }
     
     export type TokenError = {
         readonly 'location': T.LocationInfo
         readonly 'type': 
-            | ['unclosed token', {}]
-            | ['unexpected pretoken', {}]
+            | ['unclosed token', null]
+            | ['unexpected pretoken', null]
     }
     
     export namespace TokenizerAnnotationData {
