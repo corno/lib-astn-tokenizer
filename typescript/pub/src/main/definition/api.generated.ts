@@ -1,33 +1,33 @@
 import * as pt from 'pareto-core-types'
 
-import * as garithmetic from "res-pareto-arithmetic"
-import * as gbool from "res-pareto-boolean"
-import * as gstring from "res-pareto-string"
-import * as gthis from "./glossary"
-import * as gtostring from "res-pareto-tostring"
+import * as g_arithmetic from "res-pareto-arithmetic"
+import * as g_bool from "res-pareto-boolean"
+import * as g_string from "res-pareto-string"
+import * as g_this from "./glossary"
+import * as g_tostring from "res-pareto-tostring"
 
-export type CcreateBoundPretokenizer = ($d: {
-    readonly 'onError': gthis.FOnPretokenError
-}) => gthis.FPretokenize
+export type createBoundPretokenizer = ($d: {
+    readonly 'onError': g_this.F.OnPretokenError
+}) => g_this.F.Pretokenize
 
-export type CcreatePretokenErrorMessage = gthis.FCreatePretokenErrorMessage
+export type createPretokenErrorMessage = g_this.F.CreatePretokenErrorMessage
 
-export type CcreatePretokenizer = ($: gthis.T.PretokenizerConfigurationData, $d: {
-    readonly 'add': garithmetic.FAdd
-    readonly 'convertToCharacters': gstring.FToCharacterArray
-    readonly 'convertToString': gstring.FFromCharacterArray
-    readonly 'increment': gthis.FIncrement
-    readonly 'isEqual': gbool.FEqual
-    readonly 'onError': gthis.FOnPretokenError
-}) => gthis.FPretokenizeCharacters
+export type createPretokenizer = ($: g_this.T.PretokenizerConfigurationData, $d: {
+    readonly 'add': g_arithmetic.F.Add
+    readonly 'convertToCharacters': g_string.F.ToCharacterArray
+    readonly 'convertToString': g_string.F.FromCharacterArray
+    readonly 'increment': g_this.F.Increment
+    readonly 'isEqual': g_bool.F.Equal
+    readonly 'onError': g_this.F.OnPretokenError
+}) => g_this.F.PretokenizeCharacters
 
-export type CcreateTokenizer = ($d: {
-    readonly 'arrayToString': gtostring.FGetArrayAsString
-}) => gthis.FTokenize
+export type createTokenizer = ($d: {
+    readonly 'arrayToString': g_tostring.F.GetArrayAsString
+}) => g_this.F.Tokenize
 
 export type API = {
-    createBoundPretokenizer: CcreateBoundPretokenizer
-    createPretokenErrorMessage: CcreatePretokenErrorMessage
-    createPretokenizer: CcreatePretokenizer
-    createTokenizer: CcreateTokenizer
+    createBoundPretokenizer: createBoundPretokenizer
+    createPretokenErrorMessage: createPretokenErrorMessage
+    createPretokenizer: createPretokenizer
+    createTokenizer: createTokenizer
 }

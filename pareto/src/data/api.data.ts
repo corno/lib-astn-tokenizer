@@ -20,7 +20,7 @@ export const $: gapi.T.API<pd.SourceLocation> = {
         })),
         "createPretokenErrorMessage": algorithm(functionReference("this", {}, "CreatePretokenErrorMessage")),
         "createTokenizer": algorithm(functionReference("this", {}, "Tokenize"), constructor(null, {
-            "arrayToString": functionReference("tostring", {}, "GetArrayAsString")
+            "arrayToString": functionReference("tostring", {}, "GetArrayAsString"),
         })),
-    })
+    }),
 }

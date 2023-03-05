@@ -1,7 +1,7 @@
 import * as pt from 'pareto-core-types'
 
-import * as gcommon from "glo-pareto-common"
-import * as gtc from "glo-astn-tokenconsumer"
+import * as g_common from "glo-pareto-common"
+import * as g_tc from "glo-astn-tokenconsumer"
 
 export namespace T {
     
@@ -108,15 +108,15 @@ export namespace T {
             
             export type newline = null
             
-            export type snippet = gcommon.T.String
+            export type snippet = g_common.T.String
             
             export namespace structural {
                 
-                export type _ltype = gtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                export type _ltype = g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
             }
             
             export type structural = {
-                readonly 'type': gtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                readonly 'type': g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
             }
         }
         
@@ -132,9 +132,9 @@ export namespace T {
             | ['end', null]
             | ['header start', null]
             | ['newline', null]
-            | ['snippet', gcommon.T.String]
+            | ['snippet', g_common.T.String]
             | ['structural', {
-                readonly 'type': gtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                readonly 'type': g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
             }]
     }
     
@@ -152,9 +152,9 @@ export namespace T {
             | ['end', null]
             | ['header start', null]
             | ['newline', null]
-            | ['snippet', gcommon.T.String]
+            | ['snippet', g_common.T.String]
             | ['structural', {
-                readonly 'type': gtc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                readonly 'type': g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
             }]
     }
     

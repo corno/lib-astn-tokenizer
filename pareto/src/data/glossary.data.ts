@@ -7,7 +7,7 @@ import {
     reference,
     boolean,
     typeReference,
-    dictionary, group, member, taggedUnion, types, func, data, interfaceReference, inf, method, number, type, parametrizedTypeReference, parametrizedInterfaceReference, parametrizedReference
+    dictionary, group, member, taggedUnion, types, func, data, interfaceReference, inf, interfaceMethod, number, type, parametrizedTypeReference, parametrizedInterfaceReference, parametrizedReference, stream
 } from "lib-pareto-typescript-project/dist/submodules/glossary/shorthands"
 
 import * as mglossary from "lib-pareto-typescript-project/dist/submodules/glossary"
@@ -25,7 +25,7 @@ export const $: mglossary.T.Glossary<string> = {
         })),
         "LocationInfo": type(group({
             "absolutePosition": member(number()),
-            "lineLocation": member(reference("LineLocation"))
+            "lineLocation": member(reference("LineLocation")),
         })),
         "Pretoken": type(group({
             "type": member(taggedUnion({
@@ -44,7 +44,7 @@ export const $: mglossary.T.Glossary<string> = {
                         }),
                         "whitespace": group({
                         }),
-                    }))
+                    })),
                 }),
                 "end": group({}),
                 "newline": group({
@@ -54,7 +54,7 @@ export const $: mglossary.T.Glossary<string> = {
                 }),
                 "snippet": reference("common", "String"),
             })),
-            "location": member(reference("LocationInfo"))
+            "location": member(reference("LocationInfo")),
         })),
         "PretokenError": type(group({
             "type": member(taggedUnion({
@@ -163,34 +163,28 @@ export const $: mglossary.T.Glossary<string> = {
             "nonTokens": member(array(reference("NonToken"))),
         })),
     }),
+    'builders': d({
+    }),
     'interfaces': d({
-        "StringStreamConsumer": ['group', { //REPLACE BY THE STRINGSTREAMCONSUMER IN GLO-PARETO-COMMON
-            'members': d({
-                "onData": method(typeReference("common", "String")),
-                "onEnd": method(null),
-            }),
-        }],
-        "OnTokenError": method(typeReference("TokenError")),
-        "OnPretokenError": method(typeReference("PretokenError")),
-        "PretokenConsumer": ['group', {
-            'members': d({
-                "onData": method(typeReference("Pretoken")),
-                "onEnd": method(typeReference("LocationInfo")),
-            })
-        }],
-        "PretokenizerHandler": ['group', {
-            'members': d({
-                "handler": ['reference', interfaceReference("PretokenConsumer")],
-                "onError": ['reference', interfaceReference("OnPretokenError")],
-            })
-        }],
-        //"TokenHandler": method(parametrizedTypeReference("tc", { "Annotation": typeReference("TokenizerAnnotationData")}, "Token")),//REPLACE BY glo-pareto-tokenconsumer
-        "TokenizerHandler": ['group', {
-            'members': d({
-                "handler": ['reference', parametrizedInterfaceReference("tc", { "Annotation": typeReference("TokenizerAnnotationData") }, "TokenConsumer")],
-                "onError": ['reference', interfaceReference("OnTokenError")],
-            })
-        }],
+        "OnTokenError": interfaceMethod(typeReference("TokenError")),
+        "OnPretokenError": interfaceMethod(typeReference("PretokenError")),
+        "PretokenConsumer": stream(
+            interfaceMethod(typeReference("Pretoken")),
+            interfaceMethod(typeReference("LocationInfo")),
+        ),
+        // "PretokenizerHandler": ['group', {
+        //     'members': d({
+        //         "handler": ['reference', interfaceReference("PretokenConsumer")],
+        //         "onError": ['reference', interfaceReference("OnPretokenError")],
+        //     }),
+        // }],
+        //"TokenHandler": interfaceMethod(parametrizedTypeReference("tc", { "Annotation": typeReference("TokenizerAnnotationData")}, "Token")),//REPLACE BY glo-pareto-tokenconsumer
+        // "TokenizerHandler": ['group', {
+        //     'members': d({
+        //         "handler": ['reference', parametrizedInterfaceReference("tc", { "Annotation": typeReference("TokenizerAnnotationData") }, "TokenConsumer")],
+        //         "onError": ['reference', interfaceReference("OnTokenError")],
+        //     }),
+        // }],
 
 
     }),
@@ -198,8 +192,8 @@ export const $: mglossary.T.Glossary<string> = {
         "Increment": func(typeReference("common", "Number"), null, null, data(typeReference("common", "Number"), false)),
         "CreatePretokenErrorMessage": func(typeReference("PretokenError"), null, null, data(typeReference("common", "String"), false)),
         "OnPretokenError": func(typeReference("PretokenError"), null, null, null),
-        "PretokenizeCharacters": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("StringStreamConsumer"))),
-        "Pretokenize": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("StringStreamConsumer"))),
-        "Tokenize": func(typeReference("common", "Null"), null, interfaceReference("TokenizerHandler"), inf(interfaceReference("PretokenConsumer"))),
+        // "PretokenizeCharacters": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("StringStreamConsumer"))),
+        // "Pretokenize": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("StringStreamConsumer"))),
+        // "Tokenize": func(typeReference("common", "Null"), null, interfaceReference("TokenizerHandler"), inf(interfaceReference("PretokenConsumer"))),
     }),
 }
