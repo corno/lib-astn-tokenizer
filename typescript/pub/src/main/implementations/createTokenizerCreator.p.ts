@@ -1,12 +1,12 @@
-import * as pt from 'pareto-core-types'
 import * as pl from 'pareto-core-lib'
 import * as ps from 'pareto-core-state'
 
-import * as api from "../api"
+import { A } from "../api.generated"
 
-import * as mtc from "glo-astn-tokenconsumer"
+import * as g_this from "../glossary"
+import * as g_tc from "glo-astn-tokenconsumer"
 
-export const $$: api.CcreateTokenizer = ($d) => {
+export const $$: A.createTokenizerCreator = ($d) => {
     type Optional<T> =
         | [false]
         | [true, T]
@@ -39,19 +39,19 @@ export const $$: api.CcreateTokenizer = ($d) => {
 
 
     type SState = {
-        'nonTokens': ps.ArrayBuilder<api.T.NonToken>
+        'nonTokens': ps.ArrayBuilder<g_this.T.NonToken>
         'currentToken': Optional<SCurrentToken>
         'lineIsDirty': boolean
     }
 
-    return ($, $i) => {
+    return ($is) => {
         const $s: SState = {
             'currentToken': [false],
             'nonTokens': ps.createArrayBuilder(),
             'lineIsDirty': false,
         }
 
-        function flushAnnotation(): api.T.TokenizerAnnotationData {
+        function flushAnnotation(): g_this.T.TokenizerAnnotationData {
             const nt = $s.nonTokens.getArray()
             $s.nonTokens = ps.createArrayBuilder()
             return {
@@ -59,20 +59,20 @@ export const $$: api.CcreateTokenizer = ($d) => {
             }
         }
 
-        function onToken($: mtc.T.Token<api.T.TokenizerAnnotationData>) {
-            $i.handler.onToken({
+        function onToken($: g_tc.T.Token<g_this.T.TokenizerAnnotationData>) {
+            $is.handler.data({
                 'annotation': flushAnnotation(),
                 'token': $,
             })
             $s.currentToken = [false]
         }
-        function onNonToken($: api.T.NonToken) {
+        function onNonToken($: g_this.T.NonToken) {
             $s.nonTokens.push($)
 
 
         }
         return {
-            'onData': ($) => {
+            'data': ($) => {
                 const makesDirty = pl.cc($.type, ($) => {
 
                     switch ($[0]) {
@@ -132,7 +132,7 @@ export const $$: api.CcreateTokenizer = ($d) => {
                                                     pl.cc($s[1], ($s) => {
                                                         onToken(['simple string', {
                                                             'value': flushString(),
-                                                            'wrapping': ['none', {}],
+                                                            'wrapping': ['none', null],
                                                         }])
 
                                                     })
@@ -147,7 +147,7 @@ export const $$: api.CcreateTokenizer = ($d) => {
                                                     pl.cc($s[1], ($s) => {
                                                         onToken(['simple string', {
                                                             'value': flushString(),
-                                                            'wrapping': ['none', {}],
+                                                            'wrapping': ['none', null],
                                                         }])
 
 
@@ -210,30 +210,26 @@ export const $$: api.CcreateTokenizer = ($d) => {
                                 break
                             case 'header start':
                                 pl.cc($.type[1], ($) => {
-                                    onToken(['header start', {}])
+                                    onToken(['header start', null])
                                 })
                                 break
                             case 'newline':
                                 pl.cc($.type[1], ($) => {
-                                    onNonToken(['newline', {}])
+                                    onNonToken(['newline', null])
                                 })
                                 break
                             case 'snippet':
                                 pl.cc($.type[1], ($) => {
-                                    $i.onError({
-                                        'type': ['unexpected pretoken', {
-
-                                        }],
+                                    $is.errorHandler.data({
+                                        'type': ['unexpected pretoken', null],
                                         'location': location,
                                     })
                                 })
                                 break
                             case 'end':
                                 pl.cc($.type[1], ($) => {
-                                    $i.onError({
-                                        'type': ['unexpected pretoken', {
-
-                                        }],
+                                    $is.errorHandler.data({
+                                        'type': ['unexpected pretoken', null],
                                         'location': location,
                                     })
                                 })
@@ -250,14 +246,12 @@ export const $$: api.CcreateTokenizer = ($d) => {
                     }
                 )
             },
-            'onEnd': ($) => {
+            'end': ($) => {
                 handleOptional(
                     $s.currentToken,
                     ($s) => {
-                        $i.onError({
-                            'type': ['unclosed token', {
-
-                            }],
+                        $is.errorHandler.data({
+                            'type': ['unclosed token', null],
                             'location': $
                         })
                     },
@@ -265,7 +259,8 @@ export const $$: api.CcreateTokenizer = ($d) => {
 
                     }
                 )
-                $i.handler.onEnd(flushAnnotation())
+                $is.handler.end(flushAnnotation())
+                $is.errorHandler.end()
             }
         }
     }

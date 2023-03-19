@@ -4,10 +4,12 @@ import * as mproject from "lib-pareto-typescript-project/dist/submodules/project
 
 const d = pd.d
 
-import { external, sibling, this_ } from "lib-pareto-typescript-project/dist/submodules/project/shorthands"
+import { external, main, sibling, this_ } from "lib-pareto-typescript-project/dist/submodules/project/shorthands"
 
-import { $ as api } from "./api.data"
-import { $ as glossary } from "./glossary.data"
+import { $ as bindings_api } from "./bindings/api.data"
+import { $ as bindings_glossary } from "./bindings/glossary.data"
+import { $ as api } from "./main/api.data"
+import { $ as glossary } from "./main/glossary.data"
 
 export const $: mproject.T.Project<pd.SourceLocation> = {
     'author': "Corno",
@@ -48,18 +50,57 @@ export const $: mproject.T.Project<pd.SourceLocation> = {
         },
         'submodules': d({
         }),
+        'bindings': [true, {
+            'definition': {
+                'glossary': {
+                    'root': bindings_glossary,
+                    'imports': d({
+                        "tc": external("glo-astn-tokenconsumer"),
+                        "main": main(),
+                    }),
+                },
+                'api': {
+                    'root': bindings_api,
+                    'imports': d({
+                        "this": this_(),
+                        "main": ["main", null],
+                    }),
+                },
+            },
+            'implementation': ['typescript', null]
+
+        }],
         'executables': d({}),
         'test': {
             'dependencies': d({
             }),
-            'glossary': {
-                'parameters': d({}),
-                'types': d({}),
-                'builders': d({}),
-                'interfaces': d({}),
-                'functions': d({}),
+            'definition': {
+                'glossary': {
+                    'root': {
+                        'parameters': d({}),
+                        'imports': d({}),
+                        'types': d({}),
+                        'asynchronous': {
+                            'interfaces': d({}),
+                            'constructors': d({}),
+                            'functions': d({}),
+                        },
+                        'synchronous': {
+                            'interfaces': d({}),
+                            'constructors': d({}),
+                            'functions': d({}),
+                        },
+                    },
+                    'imports': d({}),
+                },
+                'api': {
+                    'root': {
+                        'algorithms': d({}),
+                    },
+                    'imports': d({}),
+                },
             },
             'imports': d({}),
-        }
+        },
     }],
 }

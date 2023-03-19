@@ -1,12 +1,10 @@
-import { API } from "./definition/api.generated"
-import { $$ as icreateBoundPretokenizer } from "./implementations/createBoundPretokenizer.p"
+import { API } from "./api.generated"
 import { $$ as icreatePretokenErrorMessage } from "./implementations/createPretokenErrorMessage.p"
-import { $$ as icreatePretokenizer } from "./implementations/createPretokenizer.p"
-import { $$ as icreateTokenizer } from "./implementations/createTokenizer.p"
+import { $$ as icreatePretokenizerCreator } from "./implementations/createPretokenizerCreator.p"
+import { $$ as icreateTokenizerCreator } from "./implementations/createTokenizerCreator.p"
 
-export const $a: API = {
-    'createBoundPretokenizer': icreateBoundPretokenizer,
+export const $api: API = {
     'createPretokenErrorMessage': icreatePretokenErrorMessage,
-    'createPretokenizer': icreatePretokenizer,
-    'createTokenizer': icreateTokenizer,
+    'createPretokenizerCreator': icreatePretokenizerCreator,
+    'createTokenizerCreator': icreateTokenizerCreator,
 }
