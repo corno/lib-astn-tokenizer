@@ -6,7 +6,7 @@ import { A } from "../api.generated"
 import * as a_bool from "res-pareto-boolean"
 import * as a_arith from "res-pareto-arithmetic"
 import * as a_string from "res-pareto-string"
-import * as a_tostring from "res-pareto-tostring"
+import * as a_build from "res-pareto-build"
 
 import * as a_main from "../../main/implementation.generated"
 
@@ -17,7 +17,7 @@ import * as a_main from "../../main/implementation.generated"
 //             charCode: $.charCodeAt(i)
 //         })
 //     }
-//     return pl.wrapRawArray(out)
+//     return pl.wrapRawArray(out)api
 // }
 
 export const $$: A.createTokenizerCreator = ($d, $se) => {
@@ -82,8 +82,7 @@ export const $$: A.createTokenizerCreator = ($d, $se) => {
             },
             {
                 // onError: $d.onError,
-                convertToCharacters: a_string.$r.toCharacterArray,
-                convertToString: a_string.$r.fromCharacterArray,
+                convertStringToCharacters: a_main.$api.sss,
                 isEqual: a_bool.$r.equal,
                 increment: ($) => $ + 1,
                 add: a_arith.$r.add,
@@ -95,14 +94,23 @@ export const $$: A.createTokenizerCreator = ($d, $se) => {
             'errorHandler': $se.preTokenErrorsHandler,
             'handler': a_main.$api.createTokenizerCreator(
                 {
-                    'arrayToString': a_tostring.$r.getArrayAsString({
-                        'maximum': [false],
-                        'separator': "",
-                    }, {}, {}),
+                    'createStringBuilder': a_main.$api.createStringBuilder("", {
+                        'arrayToString': a_tostring.$r.getArrayAsString({
+                            'maximum': [false],
+                            'separator': "",
+                        }, {}, {}),
+                    }, {}),
+
+                    'createArrayBuilder': a_build.$r.createAsyncArrayBuilder({
+                        'handler': () => {
+
+                        }
+                    })(null),
                 },
                 {
 
                 }
+
             )({
                 'errorHandler': $se.tokenErrorsHandler,
                 'handler': $is.handler,

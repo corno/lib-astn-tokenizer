@@ -20,7 +20,8 @@ export const $: mproject.T.Project<pd.SourceLocation> = {
         "glo-pareto-common": null,
         "res-pareto-arithmetic": null,
         "res-pareto-boolean": null,
-        "res-pareto-tostring": null,
+        // "res-pareto-tostring": null,
+        "res-pareto-build": null,
         "res-pareto-string": null,
         "glo-astn-tokenconsumer": null,
     }),
@@ -37,11 +38,11 @@ export const $: mproject.T.Project<pd.SourceLocation> = {
                 'api': {
                     'root': api,
                     'imports': d({
-                        //"common": "glo-pareto-common",
+                        "common": external("glo-pareto-common"),
                         "arithmetic": external("res-pareto-arithmetic"),
                         "bool": external("res-pareto-boolean"),
                         "string": external("res-pareto-string"),
-                        "tostring": external("res-pareto-tostring"),
+                        // "tostring": external("res-pareto-tostring"),
                         "this": this_(),
                     }),
                 }
@@ -79,16 +80,17 @@ export const $: mproject.T.Project<pd.SourceLocation> = {
                     'root': {
                         'parameters': d({}),
                         'imports': d({}),
-                        'types': d({}),
+                        'root': {
+                            'namespaces': d({}),
+                            'types': d({}),
+                        },
                         'asynchronous': {
                             'interfaces': d({}),
-                            'constructors': d({}),
-                            'functions': d({}),
+                            'algorithms': d({}),
                         },
                         'synchronous': {
                             'interfaces': d({}),
-                            'constructors': d({}),
-                            'functions': d({}),
+                            'algorithms': d({}),
                         },
                     },
                     'imports': d({}),

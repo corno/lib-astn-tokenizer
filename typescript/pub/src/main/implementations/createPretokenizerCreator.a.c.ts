@@ -1,6 +1,5 @@
 import * as pt from 'pareto-core-types'
 import * as pl from 'pareto-core-lib'
-import * as ps from 'pareto-core-state'
 import * as pd from 'pareto-core-dev'
 
 import * as g_this from "../glossary"
@@ -220,28 +219,28 @@ export const $$: A.createPretokenizerCreator = ($c, $d) => {
                                 break
                             case 'line comment':
                                 pl.cc($s.currentToken[1], ($s) => {
-                                    pd.implementMe()("@@@@1")
+                                    pd.implementMe("@@@@1")
                                 })
                                 break
                             case 'non wrapped string':
                                 pl.cc($s.currentToken[1], ($s) => {
-                                    pd.implementMe()("@@@@2")
+                                    pd.implementMe("@@@@2")
                                 })
                                 break
                             case 'none':
                                 pl.cc($s.currentToken[1], ($s) => {
-                                    pd.implementMe()("@@@@3")
+                                    pd.implementMe("@@@@3")
                                     $s.found
                                 })
                                 break
                             case 'whitespace':
                                 pl.cc($s.currentToken[1], ($s) => {
-                                    pd.implementMe()("@@@@4")
+                                    pd.implementMe("@@@@4")
                                 })
                                 break
                             case 'wrapped string':
                                 pl.cc($s.currentToken[1], ($s) => {
-                                    pd.implementMe()("@@@@5")
+                                    pd.implementMe("@@@@5")
                                     $s.foundNewlineCharacter
                                     $s.slashed
                                     $s.startCharacter

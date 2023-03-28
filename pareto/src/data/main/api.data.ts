@@ -1,8 +1,9 @@
 import * as pd from 'pareto-core-data'
 
-import { aconstructor, algorithm, dependent, sfunction, sFunctionReference, typeReference } from "lib-pareto-typescript-project/dist/submodules/project/shorthands"
+import { algorithm, constructor, data, dependent, sfunction, } from "lib-pareto-typescript-project/dist/submodules/project/shorthands"
 
 import * as g_project from "lib-pareto-typescript-project/dist/submodules/project"
+
 const d = pd.d
 
 export const $: g_project.T.ModuleDefinition.api.root<pd.SourceLocation> = {
@@ -12,18 +13,15 @@ export const $: g_project.T.ModuleDefinition.api.root<pd.SourceLocation> = {
         // }, {
 
         // })),
-        "createPretokenizerCreator": algorithm(aconstructor("this", {}, "CreatePretokenizer"), dependent(typeReference("this", {}, "PretokenizerConfigurationData"), {
-            "convertToCharacters": sFunctionReference("string", {}, "ToCharacterArray"),
-            "convertToString": sFunctionReference("string", {}, "FromCharacterArray"),
-            "isEqual": sFunctionReference("bool", {}, "Equal"),
-            "increment": sFunctionReference("this", {}, "Increment"),
-            "add": sFunctionReference("arithmetic", {}, "Add"),
-        }, {
-
-        })),
+        "createPretokenizerCreator": algorithm(constructor("this", {}, "CreatePretokenizer"), {}, dependent(data("this", {}, "PretokenizerConfigurationData"), {
+            "convertStringToCharacters": constructor("this", {}, "ConvertStringStreamToCharacterStream"),
+            "isEqual": sfunction("bool", {}, "Equal"),
+            "add": sfunction("arithmetic", {}, "Add"),
+        }, {})),
         "createPretokenErrorMessage": algorithm(sfunction("this", {}, "CreatePretokenErrorMessage")),
-        "createTokenizerCreator": algorithm(aconstructor("this", {}, "CreateTokenizer"), dependent(null, {
-            "arrayToString": sFunctionReference("tostring", {}, "GetArrayAsString"),
+        "createTokenizerCreator": algorithm(constructor("this", {}, "CreateTokenizer"), {}, dependent(null, {
+            "createStringBuilder": constructor("string", {}, "CreateStringBuilder"),
+            "createArrayBuilder": constructor("this", {}, "CreateArrayBuilder"),
         }, {})),
     }),
 }
