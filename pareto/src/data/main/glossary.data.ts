@@ -1,6 +1,8 @@
 import * as pd from 'pareto-core-data'
 
 import {
+    aExternalInterfaceReference,
+    aInterface,
     aInterfaceMethod,
     aInterfaceReference,
     array, constructor, data, externalTypeReference, group, imp, member, number, ref, sfunction, streamconsumer, string, taggedUnion, type, typeReference
@@ -198,36 +200,36 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
     // }),
     'asynchronous': {
         'interfaces': d({
-            "CharactersHandler": streamconsumer(
+            "CharactersHandler": aInterface(streamconsumer(
                 aInterfaceMethod(externalTypeReference("common", "String")),
                 aInterfaceMethod(null),
-            ),
-            "PretokenErrorsHandler": streamconsumer(
+            )),
+            "PretokenErrorsHandler": aInterface(streamconsumer(
                 aInterfaceMethod(typeReference("PretokenError")),
                 aInterfaceMethod(null),
-            ),
-            "PretokenHandler": streamconsumer(
+            )),
+            "PretokenHandler": aInterface(streamconsumer(
                 aInterfaceMethod(typeReference("Pretoken")),
                 aInterfaceMethod(typeReference("LocationInfo")),
-            ),
-            "TokenErrorsHandler": streamconsumer(
+            )),
+            "TokenErrorsHandler": aInterface(streamconsumer(
                 aInterfaceMethod(typeReference("TokenError")),
                 aInterfaceMethod(null),
-            ),
+            )),
         }),
         'algorithms': d({
             // "CreateArrayBuilder": constructor(aInterfaceReference("ElementConsumer"), {
             //     "handler": aInterfaceReference("ArrayConsumer"),
             // }),
-            "CreatePretokenizer": constructor(aInterfaceReference("common", "StringStream"), {
+            "CreatePretokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
                 "handler": aInterfaceReference("PretokenHandler"),
                 "errorHandler": aInterfaceReference("PretokenErrorsHandler")
             }),
             "CreateTokenizer": constructor(aInterfaceReference("PretokenHandler"), {
-                "handler": aInterfaceReference("tc", "TokenConsumer"),
+                "handler": aExternalInterfaceReference("tc", "TokenConsumer"),
                 "errorHandler": aInterfaceReference("TokenErrorsHandler")
             }),
-            "ConvertStringStreamToCharacterStream": constructor(aInterfaceReference("common", "StringStream"), {
+            "ConvertStringStreamToCharacterStream": constructor(aExternalInterfaceReference("common", "StringStream"), {
                 "charactersHandler": aInterfaceReference("CharactersHandler")
             })
         }),

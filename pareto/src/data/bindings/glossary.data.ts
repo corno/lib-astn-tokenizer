@@ -1,7 +1,8 @@
 import * as pd from 'pareto-core-data'
 
 import {
-    aInterfaceReference, constructor, externalTypeReference, imp
+    aExternalInterfaceReference,
+    constructor, externalTypeReference, imp
 } from "lib-pareto-typescript-project/dist/submodules/glossary/shorthands"
 
 import * as g_glossary from "lib-pareto-typescript-project/dist/submodules/glossary"
@@ -23,8 +24,8 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
     'asynchronous': {
         'interfaces': d({}),
         'algorithms': d({
-            "CreateTokenizer": constructor(aInterfaceReference("common", "StringStream"), {
-                "handler": aInterfaceReference("tc", "TokenConsumer"),
+            "CreateTokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
+                "handler": aExternalInterfaceReference("tc", "TokenConsumer"),
             }),
         }),
     },
