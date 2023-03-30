@@ -34,25 +34,31 @@ export namespace ASYNC {
         
         
         export namespace C {
-            export type ConvertStringStreamToCharacterStream = ($is: {
-                readonly 'charactersHandler': ASYNC.I.CharactersHandler
-            }) => g_common.ASYNC.I.StringStream
+            export type ConvertStringStreamToCharacterStream = {
+                'construct': ($is: {
+                    readonly 'charactersHandler': ASYNC.I.CharactersHandler
+                }) => g_common.ASYNC.I.StringStream
+            }
         }
         
         
         export namespace C {
-            export type CreatePretokenizer = ($is: {
-                readonly 'errorHandler': ASYNC.I.PretokenErrorsHandler
-                readonly 'handler': ASYNC.I.PretokenHandler
-            }) => g_common.ASYNC.I.StringStream
+            export type CreatePretokenizer = {
+                'construct': ($is: {
+                    readonly 'errorHandler': ASYNC.I.PretokenErrorsHandler
+                    readonly 'handler': ASYNC.I.PretokenHandler
+                }) => g_common.ASYNC.I.StringStream
+            }
         }
         
         
         export namespace C {
-            export type CreateTokenizer = ($is: {
-                readonly 'errorHandler': ASYNC.I.TokenErrorsHandler
-                readonly 'handler': g_tc.ASYNC.I.TokenConsumer<T.TokenizerAnnotationData>
-            }) => ASYNC.I.PretokenHandler
+            export type CreateTokenizer = {
+                'construct': ($is: {
+                    readonly 'errorHandler': ASYNC.I.TokenErrorsHandler
+                    readonly 'handler': g_tc.ASYNC.I.TokenConsumer<T.TokenizerAnnotationData>
+                }) => ASYNC.I.PretokenHandler
+            }
         }
     }
 }

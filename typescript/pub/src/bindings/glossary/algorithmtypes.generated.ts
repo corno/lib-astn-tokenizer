@@ -13,9 +13,11 @@ export namespace ASYNC {
         
         
         export namespace C {
-            export type CreateTokenizer = ($is: {
-                readonly 'handler': g_tc.ASYNC.I.TokenConsumer<g_main.T.TokenizerAnnotationData>
-            }) => g_common.ASYNC.I.StringStream
+            export type CreateTokenizer = {
+                'construct': ($is: {
+                    readonly 'handler': g_tc.ASYNC.I.TokenConsumer<g_main.T.TokenizerAnnotationData>
+                }) => g_common.ASYNC.I.StringStream
+            }
         }
     }
 }
