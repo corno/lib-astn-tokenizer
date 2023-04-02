@@ -46,14 +46,14 @@
 //     const locationState: ILocationState = {
 //         getCurrentLocation: () => {
 //             return {
-//                 absolutePosition: location.position + 1,
+//                 absolute position: location.position + 1,
 //                 line: location.line,
 //                 character: location.column + 1,
 //             }
 //         },
 //         getNextLocation: () => {
 //             return {
-//                 absolutePosition: location.position + 2,
+//                 absolute position: location.position + 2,
 //                 line: location.line,
 //                 character: location.column + 2,
 //             }

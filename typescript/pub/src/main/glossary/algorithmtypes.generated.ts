@@ -9,11 +9,6 @@ export namespace ASYNC {
     
     export namespace I {
         
-        export type CharactersHandler = {
-            'data': ($: g_common.T.String, ) => void
-            'end': () => void
-        }
-        
         export type PretokenErrorsHandler = {
             'data': ($: T.PretokenError, ) => void
             'end': () => void
@@ -31,15 +26,6 @@ export namespace ASYNC {
     }
     
     export namespace A {
-        
-        
-        export namespace C {
-            export type ConvertStringStreamToCharacterStream = {
-                'construct': ($is: {
-                    readonly 'charactersHandler': ASYNC.I.CharactersHandler
-                }) => g_common.ASYNC.I.StringStream
-            }
-        }
         
         
         export namespace C {

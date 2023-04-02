@@ -6,10 +6,10 @@ const d = pd.d
 
 import { external, main, sibling, this_ } from "lib-pareto-typescript-project/dist/submodules/project/shorthands"
 
-import { $ as bindings_api } from "./bindings/api.data"
-import { $ as bindings_glossary } from "./bindings/glossary.data"
-import { $ as api } from "./main/api.data"
-import { $ as glossary } from "./main/glossary.data"
+import { $ as bindings } from "./bindings/moduledefinition.data"
+import { $ as main_ } from "./main/module.data"
+import { $ as position } from "./submodules/position/module.data"
+import { $ as character } from "./submodules/character/module.data"
 
 export const $: mproject.T.Project<pd.SourceLocation> = {
     'author': "Corno",
@@ -23,51 +23,17 @@ export const $: mproject.T.Project<pd.SourceLocation> = {
         // "res-pareto-tostring": null,
         "res-pareto-build": null,
         "res-pareto-string": null,
+        "res-astn-pretokenizer": null,
         "glo-astn-tokenconsumer": null,
     }),
     'type': ['library', {
-        'main': {
-            'definition': {
-                'glossary': {
-                    'root': glossary,
-                    'imports': d({
-                        "common": external("glo-pareto-common"),
-                        "tc": external("glo-astn-tokenconsumer"),
-                    }),
-                },
-                'api': {
-                    'root': api,
-                    'imports': d({
-                        "common": external("glo-pareto-common"),
-                        "arithmetic": external("res-pareto-arithmetic"),
-                        "bool": external("res-pareto-boolean"),
-                        "string": external("res-pareto-string"),
-                        // "tostring": external("res-pareto-tostring"),
-                        "this": this_(),
-                    }),
-                }
-            },
-            'implementation': ['typescript', null],
-        },
+        'main': main_,
         'submodules': d({
+            "position": position,
+            "character": character,
         }),
         'bindings': [true, {
-            'definition': {
-                'glossary': {
-                    'root': bindings_glossary,
-                    'imports': d({
-                        "tc": external("glo-astn-tokenconsumer"),
-                        "main": main(),
-                    }),
-                },
-                'api': {
-                    'root': bindings_api,
-                    'imports': d({
-                        "this": this_(),
-                        "main": ["main", null],
-                    }),
-                },
-            },
+            'definition': bindings,
             'implementation': ['typescript', null]
 
         }],

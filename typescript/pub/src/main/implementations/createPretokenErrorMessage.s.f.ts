@@ -16,6 +16,9 @@ export const $$: A.createPretokenErrorMessage = () => {
             // case 'found dangling slash': {
             //     return `found dangling slash`
             // }
+            case 'found dangling slash': {
+                return `found dangling slash`
+            }
             case 'found dangling slash at the end of the text': {
                 return `found dangling slash at the end of the text`
             }

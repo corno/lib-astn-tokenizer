@@ -13,15 +13,18 @@ export const $: g_project.T.ModuleDefinition.api.root<pd.SourceLocation> = {
         // }, {
 
         // })),
-        "createPretokenizerCreator": algorithm(constructor("this", {}, "CreatePretokenizer"), {}, dependent(data("this", {}, "PretokenizerConfigurationData"), {
-            "convertStringToCharacters": constructor("this", {}, "ConvertStringStreamToCharacterStream"),
-            "isEqual": sfunction("bool", {}, "Equal"),
-            "add": sfunction("arithmetic", {}, "Add"),
+        "createPretokenizer": algorithm(constructor("this", {}, "CreatePretokenizer"), {}, dependent(data("position", {}, "Position"), {
+            "createStringFromCharactersBuilder": constructor("pretokenizer", {}, "CreateStringFromCharactersBuilder"),
+            "createStringSplitter": constructor("pretokenizer", {}, "CreateStringSplitter"),
+            "getNonWrappedCharacterType": sfunction("character", {}, "GetNonWrappedCharacterType"),
+            "updatePosition": sfunction("position", {}, "UpdatePosition"),
+            "getCommentCharacter": sfunction("character", {}, "GetCommentCharacter"),
+            "getPossibleNewlineCharacter": sfunction("character", {}, "GetPossibleNewlineCharacter"),
         }, {})),
         "createPretokenErrorMessage": algorithm(sfunction("this", {}, "CreatePretokenErrorMessage")),
-        "createTokenizerCreator": algorithm(constructor("this", {}, "CreateTokenizer"), {}, dependent(null, {
-            "createStringBuilder": constructor("string", {}, "CreateStringBuilder"),
-            "createArrayBuilder": constructor("this", {}, "CreateArrayBuilder"),
+        "createTokenizer": algorithm(constructor("this", {}, "CreateTokenizer"), {}, dependent(null, {
+            "createStringBuilder": constructor("build", {}, "CreateStringBuilder"),
+            "createArrayBuilder": constructor("build", {}, "CreateArrayBuilder"),
         }, {})),
     }),
 }

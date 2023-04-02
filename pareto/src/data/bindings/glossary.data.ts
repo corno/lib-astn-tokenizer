@@ -2,7 +2,7 @@ import * as pd from 'pareto-core-data'
 
 import {
     aExternalInterfaceReference,
-    constructor, externalTypeReference, imp
+    constructor, externalTypeReference, group, imp, member, number, ref, type, typeReference
 } from "lib-pareto-typescript-project/dist/submodules/glossary/shorthands"
 
 import * as g_glossary from "lib-pareto-typescript-project/dist/submodules/glossary"
@@ -14,18 +14,27 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
     'imports': d({
         "common": imp({}),
         "main": imp({}),
-        "tc": imp({ "Annotation": externalTypeReference("main", "TokenizerAnnotationData") })
+        "position": imp({}),
+        "tc": imp({}),
 
     }),
     'root': {
         'namespaces': d({}),
-        'types': d({}),
+        'types': d({
+            "Configuration": type(group({
+                "spaces per tab": member(number()),
+                "location settings": member(ref(externalTypeReference("position", "PositionSettings")))
+            }))
+        }),
     },
     'asynchronous': {
         'interfaces': d({}),
         'algorithms': d({
+            "CreatePretokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
+                "handler": aExternalInterfaceReference("main", "PretokenHandler"),
+            }),
             "CreateTokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
-                "handler": aExternalInterfaceReference("tc", "TokenConsumer"),
+                "handler": aExternalInterfaceReference("tc", "TokenConsumer", {"Annotation": externalTypeReference("main", "TokenizerAnnotationData")}),
             }),
         }),
     },

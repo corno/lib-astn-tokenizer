@@ -21,19 +21,27 @@ export namespace T {
     
     export namespace LocationInfo {
         
-        export type absolutePosition = number
+        export type absolute__position = number
         
-        export type lineLocation = T.LineLocation
+        export type line__location = T.LineLocation
     }
     
     export type LocationInfo = {
-        readonly 'absolutePosition': number
-        readonly 'lineLocation': T.LineLocation
+        readonly 'absolute position': number
+        readonly 'line location': T.LineLocation
     }
     
     export namespace NonToken {
         
         export type block__comment = string
+        
+        export namespace colon {}
+        
+        export type colon = null
+        
+        export namespace comma {}
+        
+        export type comma = null
         
         export type line__comment = string
         
@@ -46,6 +54,8 @@ export namespace T {
     
     export type NonToken = 
         | ['block comment', string]
+        | ['colon', null]
+        | ['comma', null]
         | ['line comment', string]
         | ['newline', null]
         | ['whitespace', string]
@@ -98,6 +108,14 @@ export namespace T {
                     | ['wrapped string', null]
             }
             
+            export namespace colon {}
+            
+            export type colon = null
+            
+            export namespace comma {}
+            
+            export type comma = null
+            
             export namespace end {}
             
             export type end = null
@@ -106,19 +124,40 @@ export namespace T {
             
             export type header__start = null
             
-            export namespace newline {}
+            export namespace newline {
+                
+                export namespace cr {}
+                
+                export type cr = null
+                
+                export namespace crlf {}
+                
+                export type crlf = null
+                
+                export namespace lf {}
+                
+                export type lf = null
+                
+                export namespace lfcr {}
+                
+                export type lfcr = null
+            }
             
-            export type newline = null
+            export type newline = 
+                | ['cr', null]
+                | ['crlf', null]
+                | ['lf', null]
+                | ['lfcr', null]
             
             export type snippet = g_common.T.String
             
             export namespace structural {
                 
-                export type _ltype = g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                export type _ltype = g_tc.T.StructuralTokenType
             }
             
             export type structural = {
-                readonly 'type': g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                readonly 'type': g_tc.T.StructuralTokenType
             }
         }
         
@@ -131,12 +170,19 @@ export namespace T {
                     | ['whitespace', null]
                     | ['wrapped string', null]
             }]
+            | ['colon', null]
+            | ['comma', null]
             | ['end', null]
             | ['header start', null]
-            | ['newline', null]
+            | ['newline', 
+                | ['cr', null]
+                | ['crlf', null]
+                | ['lf', null]
+                | ['lfcr', null]
+            ]
             | ['snippet', g_common.T.String]
             | ['structural', {
-                readonly 'type': g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                readonly 'type': g_tc.T.StructuralTokenType
             }]
     }
     
@@ -151,12 +197,19 @@ export namespace T {
                     | ['whitespace', null]
                     | ['wrapped string', null]
             }]
+            | ['colon', null]
+            | ['comma', null]
             | ['end', null]
             | ['header start', null]
-            | ['newline', null]
+            | ['newline', 
+                | ['cr', null]
+                | ['crlf', null]
+                | ['lf', null]
+                | ['lfcr', null]
+            ]
             | ['snippet', g_common.T.String]
             | ['structural', {
-                readonly 'type': g_tc.T.StructuralTokenType<T.TokenizerAnnotationData>
+                readonly 'type': g_tc.T.StructuralTokenType
             }]
     }
     
@@ -165,6 +218,10 @@ export namespace T {
         export type location = T.LocationInfo
         
         export namespace _ltype {
+            
+            export namespace found__dangling__slash {}
+            
+            export type found__dangling__slash = null
             
             export namespace found__dangling__slash__at__the__end__of__the__text {}
             
@@ -180,6 +237,7 @@ export namespace T {
         }
         
         export type _ltype = 
+            | ['found dangling slash', null]
             | ['found dangling slash at the end of the text', null]
             | ['unterminated block comment', null]
             | ['unterminated string', null]
@@ -188,272 +246,10 @@ export namespace T {
     export type PretokenError = {
         readonly 'location': T.LocationInfo
         readonly 'type': 
+            | ['found dangling slash', null]
             | ['found dangling slash at the end of the text', null]
             | ['unterminated block comment', null]
             | ['unterminated string', null]
-    }
-    
-    export namespace PretokenizerConfigurationData {
-        
-        export namespace characters {
-            
-            export namespace comment {
-                
-                export type asterisk = number
-                
-                export type solidus = number
-            }
-            
-            export type comment = {
-                readonly 'asterisk': number
-                readonly 'solidus': number
-            }
-            
-            export namespace structural {
-                
-                export type close__angle__bracket = number
-                
-                export type close__brace = number
-                
-                export type close__bracket = number
-                
-                export type close__paren = number
-                
-                export type colon = number
-                
-                export type comma = number
-                
-                export type exclamation__mark = number
-                
-                export type open__angle__bracket = number
-                
-                export type open__brace = number
-                
-                export type open__bracket = number
-                
-                export type open__paren = number
-                
-                export type vertical__line = number
-            }
-            
-            export type structural = {
-                readonly 'close angle bracket': number
-                readonly 'close brace': number
-                readonly 'close bracket': number
-                readonly 'close paren': number
-                readonly 'colon': number
-                readonly 'comma': number
-                readonly 'exclamation mark': number
-                readonly 'open angle bracket': number
-                readonly 'open brace': number
-                readonly 'open bracket': number
-                readonly 'open paren': number
-                readonly 'vertical line': number
-            }
-            
-            export namespace unicode {
-                
-                export type _0 = number
-                
-                export type _9 = number
-                
-                export type a = number
-                
-                export type A = number
-                
-                export type f = number
-                
-                export type F = number
-            }
-            
-            export type unicode = {
-                readonly '0': number
-                readonly '9': number
-                readonly 'a': number
-                readonly 'A': number
-                readonly 'f': number
-                readonly 'F': number
-            }
-            
-            export namespace whitespace {
-                
-                export type carriage__return = number
-                
-                export type line__feed = number
-                
-                export type space = number
-                
-                export type tab = number
-            }
-            
-            export type whitespace = {
-                readonly 'carriage return': number
-                readonly 'line feed': number
-                readonly 'space': number
-                readonly 'tab': number
-            }
-            
-            export namespace wrapped__string {
-                
-                export type apostrophe = number
-                
-                export type b = number
-                
-                export type backtick = number
-                
-                export type f = number
-                
-                export type n = number
-                
-                export type question__mark = number
-                
-                export type r = number
-                
-                export type reverse__solidus = number
-                
-                export type solidus = number
-                
-                export type t = number
-                
-                export type u = number
-            }
-            
-            export type wrapped__string = {
-                readonly 'apostrophe': number
-                readonly 'b': number
-                readonly 'backtick': number
-                readonly 'f': number
-                readonly 'n': number
-                readonly 'question mark': number
-                readonly 'r': number
-                readonly 'reverse solidus': number
-                readonly 'solidus': number
-                readonly 't': number
-                readonly 'u': number
-            }
-        }
-        
-        export type characters = {
-            readonly 'comment': {
-                readonly 'asterisk': number
-                readonly 'solidus': number
-            }
-            readonly 'structural': {
-                readonly 'close angle bracket': number
-                readonly 'close brace': number
-                readonly 'close bracket': number
-                readonly 'close paren': number
-                readonly 'colon': number
-                readonly 'comma': number
-                readonly 'exclamation mark': number
-                readonly 'open angle bracket': number
-                readonly 'open brace': number
-                readonly 'open bracket': number
-                readonly 'open paren': number
-                readonly 'vertical line': number
-            }
-            readonly 'unicode': {
-                readonly '0': number
-                readonly '9': number
-                readonly 'a': number
-                readonly 'A': number
-                readonly 'f': number
-                readonly 'F': number
-            }
-            readonly 'whitespace': {
-                readonly 'carriage return': number
-                readonly 'line feed': number
-                readonly 'space': number
-                readonly 'tab': number
-            }
-            readonly 'wrapped string': {
-                readonly 'apostrophe': number
-                readonly 'b': number
-                readonly 'backtick': number
-                readonly 'f': number
-                readonly 'n': number
-                readonly 'question mark': number
-                readonly 'r': number
-                readonly 'reverse solidus': number
-                readonly 'solidus': number
-                readonly 't': number
-                readonly 'u': number
-            }
-        }
-        
-        export namespace location {
-            
-            export type absolutePositionStart = number
-            
-            export type firstCharacter = number
-            
-            export type firstLine = number
-            
-            export type spaces__per__tab = number
-        }
-        
-        export type location = {
-            readonly 'absolutePositionStart': number
-            readonly 'firstCharacter': number
-            readonly 'firstLine': number
-            readonly 'spaces per tab': number
-        }
-    }
-    
-    export type PretokenizerConfigurationData = {
-        readonly 'characters': {
-            readonly 'comment': {
-                readonly 'asterisk': number
-                readonly 'solidus': number
-            }
-            readonly 'structural': {
-                readonly 'close angle bracket': number
-                readonly 'close brace': number
-                readonly 'close bracket': number
-                readonly 'close paren': number
-                readonly 'colon': number
-                readonly 'comma': number
-                readonly 'exclamation mark': number
-                readonly 'open angle bracket': number
-                readonly 'open brace': number
-                readonly 'open bracket': number
-                readonly 'open paren': number
-                readonly 'vertical line': number
-            }
-            readonly 'unicode': {
-                readonly '0': number
-                readonly '9': number
-                readonly 'a': number
-                readonly 'A': number
-                readonly 'f': number
-                readonly 'F': number
-            }
-            readonly 'whitespace': {
-                readonly 'carriage return': number
-                readonly 'line feed': number
-                readonly 'space': number
-                readonly 'tab': number
-            }
-            readonly 'wrapped string': {
-                readonly 'apostrophe': number
-                readonly 'b': number
-                readonly 'backtick': number
-                readonly 'f': number
-                readonly 'n': number
-                readonly 'question mark': number
-                readonly 'r': number
-                readonly 'reverse solidus': number
-                readonly 'solidus': number
-                readonly 't': number
-                readonly 'u': number
-            }
-        }
-        readonly 'location': {
-            readonly 'absolutePositionStart': number
-            readonly 'firstCharacter': number
-            readonly 'firstLine': number
-            readonly 'spaces per tab': number
-        }
     }
     
     export namespace Range {
@@ -506,30 +302,23 @@ export namespace T {
     
     export namespace TokenError {
         
-        export type location = T.LocationInfo
-        
-        export namespace _ltype {
+        export namespace unclosed__token {
             
-            export namespace unclosed__token {}
-            
-            export type unclosed__token = null
-            
-            export namespace unexpected__pretoken {}
-            
-            export type unexpected__pretoken = null
+            export type location = T.LocationInfo
         }
         
-        export type _ltype = 
-            | ['unclosed token', null]
-            | ['unexpected pretoken', null]
+        export type unclosed__token = {
+            readonly 'location': T.LocationInfo
+        }
+        
+        export type unexpected__pretoken = T.Pretoken
     }
     
-    export type TokenError = {
-        readonly 'location': T.LocationInfo
-        readonly 'type': 
-            | ['unclosed token', null]
-            | ['unexpected pretoken', null]
-    }
+    export type TokenError = 
+        | ['unclosed token', {
+            readonly 'location': T.LocationInfo
+        }]
+        | ['unexpected pretoken', T.Pretoken]
     
     export namespace TokenizerAnnotationData {
         

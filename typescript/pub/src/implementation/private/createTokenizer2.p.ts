@@ -14,7 +14,7 @@
 // function createRangeFromLocations(start: api.LocationInfo, end: api.LocationInfo): api.Range {
 //     return {
 //         start: start,
-//         length: end.absolutePosition - start.absolutePosition,
+//         length: end.absolute position - start.absolute position,
 //         size: ((): api.RangeSize => {
 //             if (start.lineLocation.line === end.lineLocation.line) {
 //                 return ["single line", { "column offset": end.lineLocation.character - start.lineLocation.character }]

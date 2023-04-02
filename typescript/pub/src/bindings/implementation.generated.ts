@@ -1,6 +1,8 @@
 import { API } from "./api.generated"
-import { $$ as icreateTokenizerCreator } from "./implementations/createTokenizerCreator.b"
+import { $$ as icreatePretokenizer } from "./implementations/createPretokenizer.b"
+import { $$ as icreateTokenizer } from "./implementations/createTokenizer.b"
 
 export const $api: API = {
-    'createTokenizerCreator': icreateTokenizerCreator,
+    'createPretokenizer': icreatePretokenizer,
+    'createTokenizer': icreateTokenizer,
 }

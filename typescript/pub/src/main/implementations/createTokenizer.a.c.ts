@@ -1,69 +1,66 @@
+import * as pt from 'pareto-core-types'
 import * as pl from 'pareto-core-lib'
-import * as ps from 'pareto-core-state'
+import * as pd from 'pareto-core-dev'
 
 import { A } from "../api.generated"
 
+import * as g_build from "res-pareto-build"
 import * as g_this from "../glossary"
 import * as g_tc from "glo-astn-tokenconsumer"
 
-export const $$: A.createTokenizerCreator = ($d) => {
-    type Optional<T> =
-        | [false]
-        | [true, T]
-
-    function handleOptional<T>(
-        $: Optional<T>,
-        onSet: ($: T) => void,
-        onNotSet?: () => void,
-    ) {
-        if ($[0] === true) {
-            onSet($[1])
-        } else {
-            if (onNotSet !== undefined) {
-                onNotSet()
-            }
-        }
-    }
+export const $$: A.createTokenizer = ($d) => {
 
 
     type SCurrentToken = {
-        'stringBuilder': g_this.ASYNC.I.StringStreamConsumer
+        'stringBuilder': g_build.ASYNC.I.StringStreamConsumer<null>
     }
 
+    // type NonTokensHandler = ($: pt.Array<g_this.T.NonToken>) => void
+
+    // type ChangeableHandler<T> = {
+    //     'handler': T
+    // }
+
+    // type SNonTokens = {
+    // }
 
     type SState = {
-        'nonTokens': ps.ArrayBuilder<g_this.T.NonToken>
-        'currentToken': Optional<SCurrentToken>
+        readonly errorHandler: g_this.ASYNC.I.TokenErrorsHandler
+        // readonly handler: {
+        //     'data': ($: g_tc.T.Token) => void
+        //     'end': ($: null) => void
+        // }
+        'tokenBuilder': g_build.ASYNC.I.Elements<
+            pt.OptionalValue<g_tc.T.Token>,
+            g_this.T.NonToken
+        >
+
+        // {
+        //     'data': ($: ) => void
+        //     'end': ($: ) => void
+        // }
+        'currentToken': pt.OptionalValue<SCurrentToken>
         'lineIsDirty': boolean
     }
 
-    return ($is) => {
-        const $s: SState = {
-            'currentToken': [false],
-            'nonTokens': ps.createArrayBuilder(),
-            'lineIsDirty': false,
-        }
+    // function initNonTokens(): SNonTokens {
+    //     const ch: ChangeableHandler<NonTokensHandler> = {
+    //         'handler': ($) => {
+    //             pl.panic("nontokenshandler not set")
+    //         }
+    //     }
+    //     return {
+    //         'handler': ch,
+    //         'nonTokens': $d.createArrayBuilder({
+    //             'handler': ($) => {
+    //                 ch.handler($)
+    //             }
+    //         })
+    //     }
+    // }
 
-        function flushAnnotation(): g_this.T.TokenizerAnnotationData {
-            const nt = $s.nonTokens.getArray()
-            $s.nonTokens = ps.createArrayBuilder()
-            return {
-                'nonTokens': nt
-            }
-        }
-
-        function onToken($: g_tc.T.Token<g_this.T.TokenizerAnnotationData>) {
-            $is.handler.data({
-                'annotation': flushAnnotation(),
-                'token': $,
-            })
-            $s.currentToken = [false]
-        }
-        function onNonToken($: g_this.T.NonToken) {
-            $s.nonTokens.push($)
-
-
-        }
+    function init($s: SState): g_this.ASYNC.I.PretokenHandler {
+        const $s_state = $s
         return {
             'data': ($) => {
                 const makesDirty = pl.cc($.type, ($) => {
@@ -92,13 +89,15 @@ export const $$: A.createTokenizerCreator = ($d) => {
                         default: return true
                     }
                 })
-                handleOptional(
+                //is there a current token?
+                pl.optional(
                     $s.currentToken,
                     ($s) => {
+                        //there is a current token
                         switch ($.type[0]) {
                             case 'end':
                                 pl.cc($.type[1], ($) => {
-                                    $s.stringBuilder.end()
+                                    $s.stringBuilder.end(null)
                                 })
                                 break
                             case 'snippet':
@@ -107,54 +106,54 @@ export const $$: A.createTokenizerCreator = ($d) => {
                                 })
                                 break
                             default: {
-                                pl.panic(`unexpected pretoken '${$.type[0]}'`)
+                                $s_state.errorHandler.data(['unexpected pretoken', $])
                             }
                         }
                     },
                     () => {
-                        const location = $.location
+                        //there is no current token
+                        const pt = $
                         switch ($.type[0]) {
                             case 'begin':
                                 pl.cc($.type[1], ($) => {
                                     const ctt = $.type
                                     $s.currentToken = [true, {
-                                        'stringBuilder': $d.createStringBuilder({
+                                        'stringBuilder': $d.createStringBuilder.construct({
                                             'handler': ($) => {
-                                                const str = $
                                                 switch (ctt[0]) {
                                                     case 'block comment':
                                                         pl.cc(ctt[1], ($s) => {
-                                                            onNonToken(['block comment', $])
+                                                            $s_state.tokenBuilder.data(['block comment', $.string])
 
                                                         })
                                                         break
                                                     case 'line comment':
                                                         pl.cc(ctt, ($s) => {
-                                                            onNonToken(['line comment', $])
+                                                            $s_state.tokenBuilder.data(['line comment', $.string])
 
                                                         })
                                                         break
                                                     case 'non wrapped string':
                                                         pl.cc(ctt, ($s) => {
-                                                            onToken(['simple string', {
-                                                                'value': $,
+                                                            $s_state.tokenBuilder.end([true, ['simple string', {
+                                                                'value': $.string,
                                                                 'wrapping': ['none', null],
-                                                            }])
+                                                            }]])
 
                                                         })
                                                         break
                                                     case 'whitespace':
                                                         pl.cc(ctt, ($s) => {
-                                                            onNonToken(['whitespace', $])
+                                                            $s_state.tokenBuilder.data(['whitespace', $.string])
 
                                                         })
                                                         break
                                                     case 'wrapped string':
                                                         pl.cc(ctt, ($s) => {
-                                                            onToken(['simple string', {
-                                                                'value': $,
+                                                            $s_state.tokenBuilder.end([true, ['simple string', {
+                                                                'value': $.string,
                                                                 'wrapping': ['none', null],
-                                                            }])
+                                                            }]])
                                                         })
                                                         break
                                                     default: pl.au(ctt[0])
@@ -164,35 +163,39 @@ export const $$: A.createTokenizerCreator = ($d) => {
                                     }]
                                 })
                                 break
+                            case 'colon':
+                                pl.cc($.type[1], ($) => {
+                                    $s_state.tokenBuilder.data(['colon', null])
+                                })
+                                break
+                            case 'comma':
+                                pl.cc($.type[1], ($) => {
+                                    $s_state.tokenBuilder.end([true, ['header start', null]])
+                                })
+                                break
                             case 'header start':
                                 pl.cc($.type[1], ($) => {
-                                    onToken(['header start', null])
+                                    $s_state.tokenBuilder.end([true, ['header start', null]])
                                 })
                                 break
                             case 'newline':
                                 pl.cc($.type[1], ($) => {
-                                    onNonToken(['newline', null])
+                                    $s_state.tokenBuilder.data(['newline', null])
                                 })
                                 break
                             case 'snippet':
                                 pl.cc($.type[1], ($) => {
-                                    $is.errorHandler.data({
-                                        'type': ['unexpected pretoken', null],
-                                        'location': location,
-                                    })
+                                    $s_state.errorHandler.data(['unexpected pretoken', pt])
                                 })
                                 break
                             case 'end':
                                 pl.cc($.type[1], ($) => {
-                                    $is.errorHandler.data({
-                                        'type': ['unexpected pretoken', null],
-                                        'location': location,
-                                    })
+                                    $s_state.errorHandler.data(['unexpected pretoken', pt])
                                 })
                                 break
                             case 'structural':
                                 pl.cc($.type[1], ($) => {
-                                    onToken(['structural', $])
+                                    $s_state.tokenBuilder.end([true, ['structural', $]])
                                 })
                                 break
                             default: {
@@ -203,21 +206,59 @@ export const $$: A.createTokenizerCreator = ($d) => {
                 )
             },
             'end': ($) => {
-                handleOptional(
+                pl.optional(
                     $s.currentToken,
                     ($s) => {
-                        $is.errorHandler.data({
-                            'type': ['unclosed token', null],
+                        $s_state.errorHandler.data(['unclosed token', {
                             'location': $
-                        })
+                        }])
                     },
                     () => {
-
+                        //there was no current token
                     }
                 )
-                $is.handler.end(flushAnnotation())
-                $is.errorHandler.end()
+                $s_state.tokenBuilder.end([false])
+                $s_state.errorHandler.end()
             }
+        }
+    }
+
+    return {
+        'construct': ($is) => {
+
+            // function flushAnnotation(): g_this.T.TokenizerAnnotationData {
+            //     // const nt = $s_state.nonTokens.end()
+            //     // $s_state.nonTokens = $d.createArrayBuilder({
+            //     //     'handler': ($) => {
+            //     //         FIXME
+            //     //     }
+            //     // })
+            //     // $s.nonTokens = ps.createArrayBuilder()
+            //     return {
+            //         'nonTokens': nt
+            //     }
+            // }
+
+            return init({
+                'errorHandler': $is.errorHandler,
+                'tokenBuilder': $d.createArrayBuilder.construct({
+                    'handler': () => {
+                        pd.implementMe("@@@@@")
+                    }
+
+                }),
+                // 'tokenBuilder': {
+                //     'data': ($) => {
+
+                //     },
+                //     'end': ($) => {
+
+                //     }
+                // },
+                'currentToken': [false],
+                //'nt': initNonTokens(),
+                'lineIsDirty': false,
+            })
         }
     }
 }
