@@ -10,8 +10,13 @@ import * as g_this from "./glossary"
 
 export namespace D {
     
+    export type createPostTokenizer = {
+        readonly 'createArrayBuilder': g_build.ASYNC.A.C.CreateArrayBuilder
+        readonly 'createStringBuilder': g_build.ASYNC.A.C.CreateStringBuilder
+    }
     
-    export type createPretokenizer = {
+    
+    export type createPreTokenizer = {
         readonly 'createStringFromCharactersBuilder': g_pretokenizer.ASYNC.A.C.CreateStringFromCharactersBuilder
         readonly 'createStringSplitter': g_pretokenizer.ASYNC.A.C.CreateStringSplitter
         readonly 'getCommentCharacter': g_character.SYNC.A.F.GetCommentCharacter
@@ -19,24 +24,19 @@ export namespace D {
         readonly 'getPossibleNewlineCharacter': g_character.SYNC.A.F.GetPossibleNewlineCharacter
         readonly 'updatePosition': g_position.SYNC.A.F.UpdatePosition
     }
-    
-    export type createTokenizer = {
-        readonly 'createArrayBuilder': g_build.ASYNC.A.C.CreateArrayBuilder
-        readonly 'createStringBuilder': g_build.ASYNC.A.C.CreateStringBuilder
-    }
 }
 
 export namespace A {
     
-    export type createPretokenErrorMessage = () => g_this.SYNC.A.F.CreatePretokenErrorMessage
+    export type createPostTokenizer = ($d: D.createPostTokenizer, ) => g_this.ASYNC.A.C.CreatePostTokenizer
     
-    export type createPretokenizer = ($: g_position.T.Position, $d: D.createPretokenizer, ) => g_this.ASYNC.A.C.CreatePretokenizer
+    export type createPreTokenErrorMessage = () => g_this.SYNC.A.F.CreatePreTokenErrorMessage
     
-    export type createTokenizer = ($d: D.createTokenizer, ) => g_this.ASYNC.A.C.CreateTokenizer
+    export type createPreTokenizer = ($: g_position.T.Position, $d: D.createPreTokenizer, ) => g_this.ASYNC.A.C.CreatePreTokenizer
 }
 
 export type API = {
-    readonly 'createPretokenErrorMessage': A.createPretokenErrorMessage
-    readonly 'createPretokenizer': A.createPretokenizer
-    readonly 'createTokenizer': A.createTokenizer
+    readonly 'createPostTokenizer': A.createPostTokenizer
+    readonly 'createPreTokenErrorMessage': A.createPreTokenErrorMessage
+    readonly 'createPreTokenizer': A.createPreTokenizer
 }

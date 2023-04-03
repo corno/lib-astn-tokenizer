@@ -8,12 +8,12 @@ const d = pd.d
 export const $: g_project.T.ModuleDefinition.api.root<pd.SourceLocation> = {
     'algorithms': d({
 
-        "createPretokenizer": algorithm(constructor("this", {}, "CreatePretokenizer"), {}, dependent(data("this", {}, "Configuration"), {}, {
-            "errorsHandler": aSideEffect("main", {}, "PretokenErrorsHandler"),
+        "createPreTokenizer": algorithm(constructor("this", {}, "CreatePreTokenizer"), {}, dependent(data("this", {}, "Configuration"), {}, {
+            "errorsHandler": aSideEffect("main", {}, "PreTokenErrorsHandler"),
         })),
         "createTokenizer": algorithm(constructor("this", {}, "CreateTokenizer"), {}, dependent(data("this", {}, "Configuration"), {}, {
-            "tokenErrorsHandler": aSideEffect("main", {}, "TokenErrorsHandler"),
-            "preTokenErrorsHandler": aSideEffect("main", {}, "PretokenErrorsHandler"),
+            "postTokenErrorsHandler": aSideEffect("main", {}, "PostTokenErrorsHandler"),
+            "preTokenErrorsHandler": aSideEffect("main", {}, "PreTokenErrorsHandler"),
         })),
     }),
 }

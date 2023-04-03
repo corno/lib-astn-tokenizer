@@ -8,7 +8,7 @@ import * as g_build from "res-pareto-build"
 import * as g_this from "../glossary"
 import * as g_tc from "glo-astn-tokenconsumer"
 
-export const $$: A.createTokenizer = ($d) => {
+export const $$: A.createPostTokenizer = ($d) => {
 
 
     type SCurrentToken = {
@@ -25,14 +25,14 @@ export const $$: A.createTokenizer = ($d) => {
     // }
 
     type SState = {
-        readonly errorHandler: g_this.ASYNC.I.TokenErrorsHandler
+        readonly errorHandler: g_this.ASYNC.I.PostTokenErrorsHandler
         // readonly handler: {
         //     'data': ($: g_tc.T.Token) => void
         //     'end': ($: null) => void
         // }
-        'tokenBuilder': g_build.ASYNC.I.Elements<
+        'nonTokensBuilder': g_build.ASYNC.I.Elements<
             pt.OptionalValue<g_tc.T.Token>,
-            g_this.T.NonToken
+            g_this.T.NonTokenType
         >
 
         // {
@@ -59,7 +59,7 @@ export const $$: A.createTokenizer = ($d) => {
     //     }
     // }
 
-    function init($s: SState): g_this.ASYNC.I.PretokenHandler {
+    function init($s: SState): g_this.ASYNC.I.PreTokenHandler {
         const $s_state = $s
         return {
             'data': ($) => {
@@ -89,6 +89,7 @@ export const $$: A.createTokenizer = ($d) => {
                         default: return true
                     }
                 })
+
                 //is there a current token?
                 pl.optional(
                     $s.currentToken,
@@ -123,19 +124,19 @@ export const $$: A.createTokenizer = ($d) => {
                                                 switch (ctt[0]) {
                                                     case 'block comment':
                                                         pl.cc(ctt[1], ($s) => {
-                                                            $s_state.tokenBuilder.data(['block comment', $.string])
+                                                            $s_state.nonTokensBuilder.data(['block comment', $.string])
 
                                                         })
                                                         break
                                                     case 'line comment':
                                                         pl.cc(ctt, ($s) => {
-                                                            $s_state.tokenBuilder.data(['line comment', $.string])
+                                                            $s_state.nonTokensBuilder.data(['line comment', $.string])
 
                                                         })
                                                         break
                                                     case 'non wrapped string':
                                                         pl.cc(ctt, ($s) => {
-                                                            $s_state.tokenBuilder.end([true, ['simple string', {
+                                                            $s_state.nonTokensBuilder.end([true, ['simple string', {
                                                                 'value': $.string,
                                                                 'wrapping': ['none', null],
                                                             }]])
@@ -144,13 +145,13 @@ export const $$: A.createTokenizer = ($d) => {
                                                         break
                                                     case 'whitespace':
                                                         pl.cc(ctt, ($s) => {
-                                                            $s_state.tokenBuilder.data(['whitespace', $.string])
+                                                            $s_state.nonTokensBuilder.data(['whitespace', $.string])
 
                                                         })
                                                         break
                                                     case 'wrapped string':
                                                         pl.cc(ctt, ($s) => {
-                                                            $s_state.tokenBuilder.end([true, ['simple string', {
+                                                            $s_state.nonTokensBuilder.end([true, ['simple string', {
                                                                 'value': $.string,
                                                                 'wrapping': ['none', null],
                                                             }]])
@@ -165,22 +166,22 @@ export const $$: A.createTokenizer = ($d) => {
                                 break
                             case 'colon':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.tokenBuilder.data(['colon', null])
+                                    $s_state.nonTokensBuilder.data(['colon', null])
                                 })
                                 break
                             case 'comma':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.tokenBuilder.end([true, ['header start', null]])
+                                    $s_state.nonTokensBuilder.end([true, ['header start', null]])
                                 })
                                 break
                             case 'header start':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.tokenBuilder.end([true, ['header start', null]])
+                                    $s_state.nonTokensBuilder.end([true, ['header start', null]])
                                 })
                                 break
                             case 'newline':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.tokenBuilder.data(['newline', null])
+                                    $s_state.nonTokensBuilder.data(['newline', null])
                                 })
                                 break
                             case 'snippet':
@@ -195,7 +196,7 @@ export const $$: A.createTokenizer = ($d) => {
                                 break
                             case 'structural':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.tokenBuilder.end([true, ['structural', $]])
+                                    $s_state.nonTokensBuilder.end([true, ['structural', $]])
                                 })
                                 break
                             default: {
@@ -217,7 +218,7 @@ export const $$: A.createTokenizer = ($d) => {
                         //there was no current token
                     }
                 )
-                $s_state.tokenBuilder.end([false])
+                $s_state.nonTokensBuilder.end([false])
                 $s_state.errorHandler.end()
             }
         }
@@ -241,8 +242,25 @@ export const $$: A.createTokenizer = ($d) => {
 
             return init({
                 'errorHandler': $is.errorHandler,
-                'tokenBuilder': $d.createArrayBuilder.construct({
-                    'handler': () => {
+                'nonTokensBuilder': $d.createArrayBuilder.construct({
+                    'handler': ($) => {
+                        const nontokens = $.array
+                        pl.optional(
+                            $.end,
+                            ($) => {
+                                // $is.handler.data({
+                                //     'annotation': {
+                                //         'location': 42,
+                                //         'precedingNonTokens': nontokens,
+                                //     },
+                                //     'token': $,
+                                // })
+                                
+                            },
+                            ()=> {
+
+                            }
+                        )
                         pd.implementMe("@@@@@")
                     }
 

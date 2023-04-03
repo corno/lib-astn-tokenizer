@@ -9,19 +9,19 @@ export namespace ASYNC {
     
     export namespace I {
         
-        export type PretokenErrorsHandler = {
-            'data': ($: T.PretokenError, ) => void
+        export type PostTokenErrorsHandler = {
+            'data': ($: T.PostTokenError, ) => void
             'end': () => void
         }
         
-        export type PretokenHandler = {
-            'data': ($: T.Pretoken, ) => void
+        export type PreTokenErrorsHandler = {
+            'data': ($: T.PreTokenError, ) => void
+            'end': () => void
+        }
+        
+        export type PreTokenHandler = {
+            'data': ($: T.PreToken, ) => void
             'end': ($: T.LocationInfo, ) => void
-        }
-        
-        export type TokenErrorsHandler = {
-            'data': ($: T.TokenError, ) => void
-            'end': () => void
         }
     }
     
@@ -29,21 +29,21 @@ export namespace ASYNC {
         
         
         export namespace C {
-            export type CreatePretokenizer = {
+            export type CreatePostTokenizer = {
                 'construct': ($is: {
-                    readonly 'errorHandler': ASYNC.I.PretokenErrorsHandler
-                    readonly 'handler': ASYNC.I.PretokenHandler
-                }) => g_common.ASYNC.I.StringStream
+                    readonly 'errorHandler': ASYNC.I.PostTokenErrorsHandler
+                    readonly 'handler': g_tc.ASYNC.I.TokenConsumer<T.TokenizerAnnotationData>
+                }) => ASYNC.I.PreTokenHandler
             }
         }
         
         
         export namespace C {
-            export type CreateTokenizer = {
+            export type CreatePreTokenizer = {
                 'construct': ($is: {
-                    readonly 'errorHandler': ASYNC.I.TokenErrorsHandler
-                    readonly 'handler': g_tc.ASYNC.I.TokenConsumer<T.TokenizerAnnotationData>
-                }) => ASYNC.I.PretokenHandler
+                    readonly 'errorHandler': ASYNC.I.PreTokenErrorsHandler
+                    readonly 'handler': ASYNC.I.PreTokenHandler
+                }) => g_common.ASYNC.I.StringStream
             }
         }
     }
@@ -55,7 +55,7 @@ export namespace SYNC {
         
         
         export namespace F {
-            export type CreatePretokenErrorMessage = ($: T.PretokenError) => g_common.T.String
+            export type CreatePreTokenErrorMessage = ($: T.PreTokenError) => g_common.T.String
         }
     }
 }

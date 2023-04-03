@@ -15,9 +15,9 @@ export namespace ASYNC {
         
         
         export namespace C {
-            export type CreatePretokenizer = {
+            export type CreatePreTokenizer = {
                 'construct': ($is: {
-                    readonly 'handler': g_main.ASYNC.I.PretokenHandler
+                    readonly 'handler': g_main.ASYNC.I.PreTokenHandler
                 }) => g_common.ASYNC.I.StringStream
             }
         }

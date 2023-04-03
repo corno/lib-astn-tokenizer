@@ -11,17 +11,17 @@ export namespace D {
 
 export namespace A {
     
-    export type createPretokenizer = ($: g_this.T.Configuration, $se: {
-        readonly 'errorsHandler': g_main.ASYNC.I.PretokenErrorsHandler
-    }) => g_this.ASYNC.A.C.CreatePretokenizer
+    export type createPreTokenizer = ($: g_this.T.Configuration, $se: {
+        readonly 'errorsHandler': g_main.ASYNC.I.PreTokenErrorsHandler
+    }) => g_this.ASYNC.A.C.CreatePreTokenizer
     
     export type createTokenizer = ($: g_this.T.Configuration, $se: {
-        readonly 'preTokenErrorsHandler': g_main.ASYNC.I.PretokenErrorsHandler
-        readonly 'tokenErrorsHandler': g_main.ASYNC.I.TokenErrorsHandler
+        readonly 'postTokenErrorsHandler': g_main.ASYNC.I.PostTokenErrorsHandler
+        readonly 'preTokenErrorsHandler': g_main.ASYNC.I.PreTokenErrorsHandler
     }) => g_this.ASYNC.A.C.CreateTokenizer
 }
 
 export type API = {
-    readonly 'createPretokenizer': A.createPretokenizer
+    readonly 'createPreTokenizer': A.createPreTokenizer
     readonly 'createTokenizer': A.createTokenizer
 }

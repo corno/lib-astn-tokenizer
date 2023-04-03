@@ -2,7 +2,7 @@ import * as pl from 'pareto-core-lib'
 
 import { A } from "../api.generated"
 
-export const $$: A.createPretokenErrorMessage = () => {
+export const $$: A.createPreTokenErrorMessage = () => {
     return ($) => {
         switch ($.type[0]) {
             // case 'expected hexadecimal digit': {

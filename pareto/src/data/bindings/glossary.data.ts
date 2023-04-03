@@ -30,8 +30,8 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
     'asynchronous': {
         'interfaces': d({}),
         'algorithms': d({
-            "CreatePretokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
-                "handler": aExternalInterfaceReference("main", "PretokenHandler"),
+            "CreatePreTokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
+                "handler": aExternalInterfaceReference("main", "PreTokenHandler"),
             }),
             "CreateTokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
                 "handler": aExternalInterfaceReference("tc", "TokenConsumer", {"Annotation": externalTypeReference("main", "TokenizerAnnotationData")}),

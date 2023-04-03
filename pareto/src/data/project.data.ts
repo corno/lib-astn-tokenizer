@@ -40,6 +40,7 @@ export const $: mproject.T.Project<pd.SourceLocation> = {
         'executables': d({}),
         'test': {
             'dependencies': d({
+                "res-pareto-build": null,
             }),
             'definition': {
                 'glossary': {

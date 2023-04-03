@@ -52,7 +52,7 @@
 // }
 
 
-// export const createPretokenizer: api.CCreatePretokenizer = ($d) => {
+// export const createPreTokenizer: api.CCreatePreTokenizer = ($d) => {
 //     let currentToken: SCurrentToken = ["none", { foundNewlineCharacter: null, foundSolidus: null }]
 //     return ($) => {
 

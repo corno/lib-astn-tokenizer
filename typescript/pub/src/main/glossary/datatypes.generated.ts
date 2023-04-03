@@ -33,6 +33,18 @@ export namespace T {
     
     export namespace NonToken {
         
+        export type range = T.Range
+        
+        export type _ltype = T.NonTokenType
+    }
+    
+    export type NonToken = {
+        readonly 'range': T.Range
+        readonly 'type': T.NonTokenType
+    }
+    
+    export namespace NonTokenType {
+        
         export type block__comment = string
         
         export namespace colon {}
@@ -52,7 +64,7 @@ export namespace T {
         export type whitespace = string
     }
     
-    export type NonToken = 
+    export type NonTokenType = 
         | ['block comment', string]
         | ['colon', null]
         | ['comma', null]
@@ -60,7 +72,27 @@ export namespace T {
         | ['newline', null]
         | ['whitespace', string]
     
-    export namespace Pretoken {
+    export namespace PostTokenError {
+        
+        export namespace unclosed__token {
+            
+            export type location = T.LocationInfo
+        }
+        
+        export type unclosed__token = {
+            readonly 'location': T.LocationInfo
+        }
+        
+        export type unexpected__pretoken = T.PreToken
+    }
+    
+    export type PostTokenError = 
+        | ['unclosed token', {
+            readonly 'location': T.LocationInfo
+        }]
+        | ['unexpected pretoken', T.PreToken]
+    
+    export namespace PreToken {
         
         export type location = T.LocationInfo
         
@@ -126,28 +158,30 @@ export namespace T {
             
             export namespace newline {
                 
-                export namespace cr {}
+                export type is__suffix = boolean
                 
-                export type cr = null
+                export namespace _ltype {
+                    
+                    export namespace cr {}
+                    
+                    export type cr = null
+                    
+                    export namespace lf {}
+                    
+                    export type lf = null
+                }
                 
-                export namespace crlf {}
-                
-                export type crlf = null
-                
-                export namespace lf {}
-                
-                export type lf = null
-                
-                export namespace lfcr {}
-                
-                export type lfcr = null
+                export type _ltype = 
+                    | ['cr', null]
+                    | ['lf', null]
             }
             
-            export type newline = 
-                | ['cr', null]
-                | ['crlf', null]
-                | ['lf', null]
-                | ['lfcr', null]
+            export type newline = {
+                readonly 'is suffix': boolean
+                readonly 'type': 
+                    | ['cr', null]
+                    | ['lf', null]
+            }
             
             export type snippet = g_common.T.String
             
@@ -174,19 +208,19 @@ export namespace T {
             | ['comma', null]
             | ['end', null]
             | ['header start', null]
-            | ['newline', 
-                | ['cr', null]
-                | ['crlf', null]
-                | ['lf', null]
-                | ['lfcr', null]
-            ]
+            | ['newline', {
+                readonly 'is suffix': boolean
+                readonly 'type': 
+                    | ['cr', null]
+                    | ['lf', null]
+            }]
             | ['snippet', g_common.T.String]
             | ['structural', {
                 readonly 'type': g_tc.T.StructuralTokenType
             }]
     }
     
-    export type Pretoken = {
+    export type PreToken = {
         readonly 'location': T.LocationInfo
         readonly 'type': 
             | ['begin', {
@@ -201,19 +235,19 @@ export namespace T {
             | ['comma', null]
             | ['end', null]
             | ['header start', null]
-            | ['newline', 
-                | ['cr', null]
-                | ['crlf', null]
-                | ['lf', null]
-                | ['lfcr', null]
-            ]
+            | ['newline', {
+                readonly 'is suffix': boolean
+                readonly 'type': 
+                    | ['cr', null]
+                    | ['lf', null]
+            }]
             | ['snippet', g_common.T.String]
             | ['structural', {
                 readonly 'type': g_tc.T.StructuralTokenType
             }]
     }
     
-    export namespace PretokenError {
+    export namespace PreTokenError {
         
         export type location = T.LocationInfo
         
@@ -243,7 +277,7 @@ export namespace T {
             | ['unterminated string', null]
     }
     
-    export type PretokenError = {
+    export type PreTokenError = {
         readonly 'location': T.LocationInfo
         readonly 'type': 
             | ['found dangling slash', null]
@@ -300,37 +334,20 @@ export namespace T {
             readonly 'column offset': number
         }]
     
-    export namespace TokenError {
-        
-        export namespace unclosed__token {
-            
-            export type location = T.LocationInfo
-        }
-        
-        export type unclosed__token = {
-            readonly 'location': T.LocationInfo
-        }
-        
-        export type unexpected__pretoken = T.Pretoken
-    }
-    
-    export type TokenError = 
-        | ['unclosed token', {
-            readonly 'location': T.LocationInfo
-        }]
-        | ['unexpected pretoken', T.Pretoken]
-    
     export namespace TokenizerAnnotationData {
         
-        export namespace nonTokens {
+        export type location = T.LocationInfo
+        
+        export namespace precedingNonTokens {
             
             export type A = T.NonToken
         }
         
-        export type nonTokens = pt.Array<T.NonToken>
+        export type precedingNonTokens = pt.Array<T.NonToken>
     }
     
     export type TokenizerAnnotationData = {
-        readonly 'nonTokens': pt.Array<T.NonToken>
+        readonly 'location': T.LocationInfo
+        readonly 'precedingNonTokens': pt.Array<T.NonToken>
     }
 }

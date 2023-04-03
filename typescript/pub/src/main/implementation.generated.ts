@@ -1,10 +1,10 @@
 import { API } from "./api.generated"
-import { $$ as icreatePretokenErrorMessage } from "./implementations/createPretokenErrorMessage.s.f"
-import { $$ as icreatePretokenizer } from "./implementations/createPretokenizer.a.c"
-import { $$ as icreateTokenizer } from "./implementations/createTokenizer.a.c"
+import { $$ as icreatePostTokenizer } from "./implementations/createPostTokenizer.a.c"
+import { $$ as icreatePreTokenErrorMessage } from "./implementations/createPreTokenErrorMessage.s.f"
+import { $$ as icreatePreTokenizer } from "./implementations/createPreTokenizer.a.c"
 
 export const $api: API = {
-    'createPretokenErrorMessage': icreatePretokenErrorMessage,
-    'createPretokenizer': icreatePretokenizer,
-    'createTokenizer': icreateTokenizer,
+    'createPostTokenizer': icreatePostTokenizer,
+    'createPreTokenErrorMessage': icreatePreTokenErrorMessage,
+    'createPreTokenizer': icreatePreTokenizer,
 }

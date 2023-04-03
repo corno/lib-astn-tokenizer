@@ -13,7 +13,7 @@ import * as a_character from "../../submodules/character"
 
 import * as a_main from "../../main/implementation.generated"
 
-import { $$ as pretok } from "./createPretokenizer.b"
+import { $$ as pretok } from "./createPreTokenizer.b"
 
 // function splitString($: string): pt.Array<X> {
 //     const out: X[] = []
@@ -36,13 +36,13 @@ export const $$: A.createTokenizer = ($, $se) => {
                 }
             ).construct({
                 //'errorHandler': $se.preTokenErrorsHandler,
-                'handler': a_main.$api.createTokenizer(
+                'handler': a_main.$api.createPostTokenizer(
                     {
                         'createStringBuilder': a_build.$r.createStringBuilder(""),
                         'createArrayBuilder': a_build.$r.createArrayBuilder(),
                     },
                 ).construct({
-                    'errorHandler': $se.tokenErrorsHandler,
+                    'errorHandler': $se.postTokenErrorsHandler,
                     'handler': $is.handler,
                 }),
             })

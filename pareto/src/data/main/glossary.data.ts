@@ -5,7 +5,7 @@ import {
     aInterface,
     aInterfaceMethod,
     aInterfaceReference,
-    array, constructor, data, externalTypeReference, group, imp, member, number, ref, sfunction, streamconsumer, string, taggedUnion, type, typeReference
+    array, boolean, constructor, data, externalTypeReference, group, imp, member, number, ref, sfunction, streamconsumer, string, taggedUnion, type, typeReference
 } from "lib-pareto-typescript-project/dist/submodules/glossary/shorthands"
 
 import * as g_glossary from "lib-pareto-typescript-project/dist/submodules/glossary"
@@ -31,7 +31,7 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
                 "absolute position": member(number()),
                 "line location": member(ref(typeReference("LineLocation"))),
             })),
-            "Pretoken": type(group({
+            "PreToken": type(group({
                 "type": member(taggedUnion({
                     "header start": group({
                     }),
@@ -51,11 +51,12 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
                         })),
                     }),
                     "end": group({}),
-                    "newline": taggedUnion({
-                        "crlf": group({}),
-                        "lfcr": group({}),
-                        "lf": group({}),
-                        "cr": group({}),
+                    "newline": group({
+                        "type": member(taggedUnion({
+                            "lf": group({}),
+                            "cr": group({}),
+                        })),
+                        "is suffix": member(boolean())
                     }),
                     "colon": group({
                     }),
@@ -68,7 +69,7 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
                 })),
                 "location": member(ref(typeReference("LocationInfo"))),
             })),
-            "PretokenError": type(group({
+            "PreTokenError": type(group({
                 "type": member(taggedUnion({
                     "unterminated block comment": group({}),
                     "found dangling slash at the end of the text": group({}),
@@ -97,13 +98,13 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
                     "column": member(number()),
                 }),
             })),
-            "TokenError": type(taggedUnion({
-                "unexpected pretoken": ref(typeReference("Pretoken")),
+            "PostTokenError": type(taggedUnion({
+                "unexpected pretoken": ref(typeReference("PreToken")),
                 "unclosed token": group({
                     "location": member(ref(typeReference("LocationInfo"))),
                 }),
             })),
-            "NonToken": type(taggedUnion({
+            "NonTokenType": type(taggedUnion({
                 "comma": group({}),
                 "colon": group({}),
                 "block comment": string(),
@@ -111,71 +112,46 @@ export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
                 "whitespace": string(),
                 "newline": group({}),
             })),
+            "NonToken": type(group({
+                "range": member(ref(typeReference("Range"))),
+                "type": member(ref(typeReference("NonTokenType"))),
+            })),
             "TokenizerAnnotationData": type(group({
-                "nonTokens": member(array(ref(typeReference("NonToken")))),
+                "precedingNonTokens": member(array(ref(typeReference("NonToken")))),
+                "location": member(ref(typeReference("LocationInfo"))),
             })),
         }),
     },
-    // 'builders': d({
-    // }),
-    // 'interfaces': d({
-    //     "OnTokenError": interfaceMethod(typeReference("TokenError")),
-    //     "OnPretokenError": interfaceMethod(typeReference("PretokenError")),
-    //     "PretokenConsumer": stream(
-    //         interfaceMethod(typeReference("Pretoken")),
-    //         interfaceMethod(typeReference("LocationInfo")),
-    //     ),
-    //     // "PretokenizerHandler": ['group', {
-    //     //     'members': d({
-    //     //         "handler": ['reference', interfaceReference("PretokenConsumer")],
-    //     //         "onError": ['reference', interfaceReference("OnPretokenError")],
-    //     //     }),
-    //     // }],
-    //     //"TokenHandler": interfaceMethod(parametrizedTypeReference("tc", { "Annotation": typeReference("TokenizerAnnotationData")}, "Token")),//REPLACE BY glo-pareto-tokenconsumer
-    //     // "TokenizerHandler": ['group', {
-    //     //     'members': d({
-    //     //         "handler": ['reference', parametrizedInterfaceReference("tc", { "Annotation": typeReference("TokenizerAnnotationData") }, "TokenConsumer")],
-    //     //         "onError": ['reference', interfaceReference("OnTokenError")],
-    //     //     }),
-    //     // }],
-
-
-    // }),
-    // 'functions': d({
-    //     // "PretokenizeCharacters": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("common", "StringStream"))),
-    //     // "Pretokenize": func(typeReference("common", "Null"), null, interfaceReference("PretokenizerHandler"), inf(interfaceReference("common", "StringStream"))),
-    //     // "Tokenize": func(typeReference("common", "Null"), null, interfaceReference("TokenizerHandler"), inf(interfaceReference("PretokenConsumer"))),
-    // }),
     'asynchronous': {
         'interfaces': d({
-            "PretokenErrorsHandler": aInterface(streamconsumer(
-                aInterfaceMethod(typeReference("PretokenError")),
+            "PreTokenErrorsHandler": aInterface(streamconsumer(
+                aInterfaceMethod(typeReference("PreTokenError")),
                 aInterfaceMethod(null),
             )),
-            "PretokenHandler": aInterface(streamconsumer(
-                aInterfaceMethod(typeReference("Pretoken")),
+            "PreTokenHandler": aInterface(streamconsumer(
+                aInterfaceMethod(typeReference("PreToken")),
                 aInterfaceMethod(typeReference("LocationInfo")),
             )),
-            "TokenErrorsHandler": aInterface(streamconsumer(
-                aInterfaceMethod(typeReference("TokenError")),
+            "PostTokenErrorsHandler": aInterface(streamconsumer(
+                aInterfaceMethod(typeReference("PostTokenError")),
                 aInterfaceMethod(null),
             )),
         }),
         'algorithms': d({
-            "CreatePretokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
-                "handler": aInterfaceReference("PretokenHandler"),
-                "errorHandler": aInterfaceReference("PretokenErrorsHandler")
+            "CreatePreTokenizer": constructor(aExternalInterfaceReference("common", "StringStream"), {
+                "handler": aInterfaceReference("PreTokenHandler"),
+                "errorHandler": aInterfaceReference("PreTokenErrorsHandler")
             }),
-            "CreateTokenizer": constructor(aInterfaceReference("PretokenHandler"), {
-                "handler": aExternalInterfaceReference("tc", "TokenConsumer", {"Annotation": typeReference("TokenizerAnnotationData")}),
-                "errorHandler": aInterfaceReference("TokenErrorsHandler")
+            "CreatePostTokenizer": constructor(aInterfaceReference("PreTokenHandler"), {
+                "handler": aExternalInterfaceReference("tc", "TokenConsumer", { "Annotation": typeReference("TokenizerAnnotationData") }),
+                "errorHandler": aInterfaceReference("PostTokenErrorsHandler")
             }),
         }),
     },
     'synchronous': {
         'interfaces': d({}),
         'algorithms': d({
-            "CreatePretokenErrorMessage": sfunction(externalTypeReference("common", "String"), data(typeReference("PretokenError"))),
+            "CreatePreTokenErrorMessage": sfunction(externalTypeReference("common", "String"), data(typeReference("PreTokenError"))),
         }),
     },
 }

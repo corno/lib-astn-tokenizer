@@ -8,12 +8,12 @@ const d = pd.d
 
 export const $: g_project.T.ModuleDefinition.api.root<pd.SourceLocation> = {
     'algorithms': d({
-        // "createBoundPretokenizer": algorithm(functionReference("this", {}, "Pretokenize"), dependent(null, {
-        //     "onError": functionReference("this", {}, "OnPretokenError"),
+        // "createBoundPreTokenizer": algorithm(functionReference("this", {}, "PreTokenize"), dependent(null, {
+        //     "onError": functionReference("this", {}, "OnPreTokenError"),
         // }, {
 
         // })),
-        "createPretokenizer": algorithm(constructor("this", {}, "CreatePretokenizer"), {}, dependent(data("position", {}, "Position"), {
+        "createPreTokenizer": algorithm(constructor("this", {}, "CreatePreTokenizer"), {}, dependent(data("position", {}, "Position"), {
             "createStringFromCharactersBuilder": constructor("pretokenizer", {}, "CreateStringFromCharactersBuilder"),
             "createStringSplitter": constructor("pretokenizer", {}, "CreateStringSplitter"),
             "getNonWrappedCharacterType": sfunction("character", {}, "GetNonWrappedCharacterType"),
@@ -21,8 +21,8 @@ export const $: g_project.T.ModuleDefinition.api.root<pd.SourceLocation> = {
             "getCommentCharacter": sfunction("character", {}, "GetCommentCharacter"),
             "getPossibleNewlineCharacter": sfunction("character", {}, "GetPossibleNewlineCharacter"),
         }, {})),
-        "createPretokenErrorMessage": algorithm(sfunction("this", {}, "CreatePretokenErrorMessage")),
-        "createTokenizer": algorithm(constructor("this", {}, "CreateTokenizer"), {}, dependent(null, {
+        "createPreTokenErrorMessage": algorithm(sfunction("this", {}, "CreatePreTokenErrorMessage")),
+        "createPostTokenizer": algorithm(constructor("this", {}, "CreatePostTokenizer"), {}, dependent(null, {
             "createStringBuilder": constructor("build", {}, "CreateStringBuilder"),
             "createArrayBuilder": constructor("build", {}, "CreateArrayBuilder"),
         }, {})),
