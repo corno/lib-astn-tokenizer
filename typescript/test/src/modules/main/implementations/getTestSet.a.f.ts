@@ -13,6 +13,9 @@ import * as a_builder from "res-pareto-build"
 
 export const $$: A.getTestSet = ($) => {
 
+
+    pd.logDebugMessage("TESTING")
+
     const pretokCons = g_pub.$b.createPreTokenizer(
         {
             'location settings': {

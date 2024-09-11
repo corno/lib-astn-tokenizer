@@ -13,10 +13,10 @@ import * as g_glossary from "lib-pareto-typescript-project/dist/submodules/gloss
 const d = pd.d
 
 export const $: g_glossary.T.Glossary<pd.SourceLocation> = {
-    'parameters': d({}),
+    'glossary parameters': d({}),
     'imports': d({
-        "common": imp({}),
-        "tc": imp({})
+        "common": imp(),
+        "tc": imp()
     }),
     'root': {
         'namespaces': d({}),

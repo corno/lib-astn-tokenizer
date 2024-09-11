@@ -2,6 +2,9 @@ import * as pt from 'pareto-core-types'
 import * as pl from 'pareto-core-lib'
 import * as pd from 'pareto-core-dev'
 
+import * as tempinternals from 'pareto-core-internals'
+
+
 import * as g_position from "../../submodules/position"
 import * as g_this from "../glossary"
 import * as g_pretokenizer from "res-astn-pretokenizer"
@@ -124,617 +127,616 @@ export const $$: A.createPreTokenizer = ($c, $d) => {
                     const character = $
 
                     const newPosition = $d.updatePosition({
-                        'character': pl.optional(
-                            $d.getPossibleNewlineCharacter($),
-                            ($) => {
-                                return pl.optional<g_character.T.NewlineCharacter, g_position.T.UpdatePositionData.character>(
-                                    $s_state['found newline'],
-                                    ($s) => {
-                                        return ['consequetive newline', null]
-                                    },
-                                    () => {
-                                        return ['initial newline', null]
-                                    }
-                                )
-                            },
-                            () => {
-                                return ['other', character]
-                            }
-                        ),
+                        'character': tempinternals.wrapRawOptionalValue(
+                            $d.getPossibleNewlineCharacter($)).map(
+                                ($) => {
+                                    return $s_state['found newline'].map<g_position.T.UpdatePositionData.character>(
+                                        ($s) => {
+                                            return ['consequetive newline', null]
+                                        },
+                                        () => {
+                                            return ['initial newline', null]
+                                        }
+                                    )
+                                },
+                                () => {
+                                    return ['other', character]
+                                }
+                            ),
                         'current position': $s.position,
 
                     })
 
                     //is the current character a newline
-                    pl.optional(
-                        $d.getPossibleNewlineCharacter($),
-                        ($) => {
-                            //the current character is a newline
+                    tempinternals.wrapRawOptionalValue(
+                        $d.getPossibleNewlineCharacter($)).map(
+                            ($) => {
+                                //the current character is a newline
 
-                            switch ($[0]) {
-                                case 'carriage return':
-                                    pl.cc($[1], () => {
-                                        //was the previous character a newline?
-                                        pl.optional(
-                                            $s_state['found newline'],
-                                            ($s) => {
-                                                //the previous character was a newline
-                                                switch ($s[0]) {
-                                                    case 'carriage return':
-                                                        pl.cc($s[1], () => {
-                                                            $s_state.handler.data(['newline', {
-                                                                'type': ['cr', null],
-                                                                'is suffix': false,
-                                                            }])
+                                switch ($[0]) {
+                                    case 'carriage return':
+                                        pl.cc($[1], () => {
+                                            //was the previous character a newline?
+                                            $s_state['found newline'].map(
 
-                                                        })
-                                                        break
-                                                    case 'line feed':
-                                                        pl.cc($s[1], () => {
-                                                            $s_state.handler.data(['newline', {
-                                                                'type': ['cr', null],
-                                                                'is suffix': true,
-                                                            }])
-                                                            $s_state['found newline'] = [false]
-                                                        })
-                                                        break
-                                                    default: pl.au($s[0])
-                                                }
-                                            },
-                                            () => {
-                                                //the previous character was not a newline
+                                                ($s) => {
+                                                    //the previous character was a newline
+                                                    switch ($s[0]) {
+                                                        case 'carriage return':
+                                                            pl.cc($s[1], () => {
+                                                                $s_state.handler.data(['newline', {
+                                                                    'type': ['cr', null],
+                                                                    'is suffix': false,
+                                                                }])
 
-                                                $s_state.handler.data(['newline', {
-                                                    'type': ['cr', null],
-                                                    'is suffix': false,
-                                                }])
-                                                $s_state['found newline'] = [true, ['carriage return', null]]
-
-                                            }
-                                        )
-                                    })
-                                    break
-                                case 'line feed':
-                                    pl.cc($[1], () => {
-                                        //was the previous character a newline?
-                                        pl.optional(
-                                            $s_state['found newline'],
-                                            ($s) => {
-                                                //the previous character was a newline
-                                                switch ($s[0]) {
-                                                    case 'carriage return':
-                                                        pl.cc($s[1], () => {
-                                                            $s_state.handler.data(['newline', {
-                                                                'type': ['lf', null],
-                                                                'is suffix': true,
-                                                            }])
-                                                            $s_state['found newline'] = [false]
-
-                                                        })
-                                                        break
-                                                    case 'line feed':
-                                                        pl.cc($s[1], () => {
-                                                            $s_state.handler.data(['newline', {
-                                                                'type': ['lf', null],
-                                                                'is suffix': false,
-                                                            }])
-                                                        })
-                                                        break
-                                                    default: pl.au($s[0])
-                                                }
-                                            },
-                                            () => {
-                                                //the previous character was not a newline
-
-                                                $s_state.handler.data(['newline', {
-                                                    'type': ['lf', null],
-                                                    'is suffix': false,
-                                                }])
-                                                $s_state['found newline'] = [true, ['line feed', null]]
-
-                                            }
-                                        )
-                                    })
-                                    break
-                                default: pl.au($[0])
-                            }
-
-                        },
-                        () => {
-                            //the current character is *not* a newline
-
-                            //was the previous character a newline?
-                            pl.optional(
-                                $s_state['found newline'],
-                                ($s) => {
-                                    //the previous character was a newline
-                                    $s_state['found newline'] = [false]
-                                },
-                                () => {
-                                    //the previous character was not a newline
-                                }
-                            )
-
-                            //process the character
-
-                            //what is the current context? is the tokenizer currenly processing a wrapped token or not?
-                            switch ($s.context[0]) {
-                                case 'non wrapped':
-                                    pl.cc($s.context[1], ($s) => {
-                                        //currently no wrapped token is being processed
-
-                                        const $s_nonwrapped = $s
-
-                                        function startWrappedToken($: g_this.T.PreToken._ltype.begin._ltype, $s: SWrapped_Type) {
-                                            $s_state.context = ['wrapped', {
-                                                'type': $s,
-                                                'snippet': $d.createStringFromCharactersBuilder.construct({
-                                                    'handler': ($) => {
-                                                        $s_state.handler.data(['snippet', $])
-                                                        $s_state.handler.data(['end', null])
+                                                            })
+                                                            break
+                                                        case 'line feed':
+                                                            pl.cc($s[1], () => {
+                                                                $s_state.handler.data(['newline', {
+                                                                    'type': ['cr', null],
+                                                                    'is suffix': true,
+                                                                }])
+                                                                $s_state['found newline'] = pl.notSet()
+                                                            })
+                                                            break
+                                                        default: pl.au($s[0])
                                                     }
-                                                })
-                                            }]
-                                            $s_state.handler.data(['begin', {
-                                                'type': $
-                                            }])
+                                                },
+                                                () => {
+                                                    //the previous character was not a newline
 
-                                        }
-                                        function startWrappedString($: SWrapper) {
-                                            startWrappedToken(
-                                                ['wrapped string', null],
-                                                ['string', {
-                                                    'wrapper': $,
-                                                    'slashed': false,
-                                                    'unicode': [false]
-                                                }]
+                                                    $s_state.handler.data(['newline', {
+                                                        'type': ['cr', null],
+                                                        'is suffix': false,
+                                                    }])
+                                                    $s_state['found newline'] = pl.set(['carriage return', null])
+
+                                                }
                                             )
+                                        })
+                                        break
+                                    case 'line feed':
+                                        pl.cc($[1], () => {
+                                            //was the previous character a newline?
+                                            $s_state['found newline'].map(
+                                                ($s) => {
+                                                    //the previous character was a newline
+                                                    switch ($s[0]) {
+                                                        case 'carriage return':
+                                                            pl.cc($s[1], () => {
+                                                                $s_state.handler.data(['newline', {
+                                                                    'type': ['lf', null],
+                                                                    'is suffix': true,
+                                                                }])
+                                                                $s_state['found newline'] = pl.notSet()
 
-                                        }
-                                        switch ($s.found[0]) {
-                                            case 'nothing':
-                                                pl.cc($s.found[1], ($s) => {
+                                                            })
+                                                            break
+                                                        case 'line feed':
+                                                            pl.cc($s[1], () => {
+                                                                $s_state.handler.data(['newline', {
+                                                                    'type': ['lf', null],
+                                                                    'is suffix': false,
+                                                                }])
+                                                            })
+                                                            break
+                                                        default: pl.au($s[0])
+                                                    }
+                                                },
+                                                () => {
+                                                    //the previous character was not a newline
 
-                                                    //when not processing a string, look for markers indicating a full token or the start of a (possible) token
-                                                    const nwct = $d.getNonWrappedCharacterType($)
-                                                    switch (nwct[0]) {
-                                                        case 'marker':
-                                                            pl.cc(nwct[1], ($) => {
-                                                                //the current character is a marker
+                                                    $s_state.handler.data(['newline', {
+                                                        'type': ['lf', null],
+                                                        'is suffix': false,
+                                                    }])
+                                                    $s_state['found newline'] = pl.set(['line feed', null])
 
-                                                                if ($s['processing'][0] !== 'nothing') {
-                                                                    //the tokenizer was processing a string or whitespace, end it first
-                                                                    $s['processing'][1].snippet.end()
-                                                                    $s['processing'] = ['nothing', null]
-                                                                }
+                                                }
+                                            )
+                                        })
+                                        break
+                                    default: pl.au($[0])
+                                }
 
-                                                                //guaranteed to not be processing a string or whitespace, so cast to state
-                                                                pl.cc($s['processing'][1], ($s) => {
+                            },
+                            () => {
+                                //the current character is *not* a newline
 
-                                                                    const $s_nonprocessing = $s
+                                //was the previous character a newline?
+                                $s_state['found newline'].map(
+                                    ($s) => {
+                                        //the previous character was a newline
+                                        $s_state['found newline'] = pl.notSet()
+                                    },
+                                    () => {
+                                        //the previous character was not a newline
+                                    }
+                                )
 
-                                                                    switch ($[0]) {
-                                                                        case 'apostrophe':
-                                                                            pl.cc($[1], ($) => {
-                                                                                startWrappedString(['apostrophe', null])
-                                                                            })
-                                                                            break
-                                                                        case 'backtick':
-                                                                            pl.cc($[1], ($) => {
-                                                                                startWrappedString(['backtick', null])
-                                                                            })
-                                                                            break
-                                                                        case 'quotation mark':
-                                                                            pl.cc($[1], ($) => {
-                                                                                startWrappedString(['quote', null])
-                                                                            })
-                                                                            break
-                                                                        case 'close angle bracket':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['close shorthand group', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'close brace':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['close dictionary', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'close bracket':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['close list', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'close parenthesis':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['close verbose group', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'colon':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['colon', null])
-                                                                            })
-                                                                            break
-                                                                        case 'comma':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['comma', null])
+                                //process the character
 
-                                                                            })
-                                                                            break
-                                                                        case 'exclamation mark':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['header start', null])
-                                                                            })
-                                                                            break
-                                                                        case 'open angle bracket':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['open shorthand group', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'open brace':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['open dictionary', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'open bracket':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['open list', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'open parenthesis':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['open verbose group', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'solidus':
-                                                                            pl.cc($[1], ($) => {
-                                                                                //start of comment
-                                                                                $s_nonwrapped.found = ['solidus', null]
-                                                                            })
-                                                                            break
-                                                                        case 'vertical line':
-                                                                            pl.cc($[1], ($) => {
-                                                                                $s_state.handler.data(['structural', {
-                                                                                    'type': ['tagged union start', null]
-                                                                                }])
-                                                                            })
-                                                                            break
-                                                                        case 'whitespace':
-                                                                            pl.cc($[1], ($) => {
-                                                                                pd.logDebugMessage("FDSFSDFSDF")
-                                                                                const handler = $d.createStringFromCharactersBuilder.construct({
-                                                                                    'handler': ($) => {
-                                                                                        $s_state.handler.data(['snippet', $])
-                                                                                    }
-                                                                                })
-                                                                                // $s_state['context'] = ['string', {
-                                                                                //     'type': ['whitespace', null],
-                                                                                //     'snippet': handler
-                                                                                // }]
-                                                                                // handler.data(char.code)
-                                                                            })
-                                                                            break
-                 
-                                                                        default: pl.au($[0])
+                                //what is the current context? is the tokenizer currenly processing a wrapped token or not?
+                                switch ($s.context[0]) {
+                                    case 'non wrapped':
+                                        pl.cc($s.context[1], ($s) => {
+                                            //currently no wrapped token is being processed
+
+                                            const $s_nonwrapped = $s
+
+                                            function startWrappedToken($: g_this.T.PreToken._ltype.begin._ltype, $s: SWrapped_Type) {
+                                                $s_state.context = ['wrapped', {
+                                                    'type': $s,
+                                                    'snippet': $d.createStringFromCharactersBuilder.construct({
+                                                        // 'handler': ($) => {
+                                                        //     $s_state.handler.data(['snippet', $])
+                                                        //     $s_state.handler.data(['end', null])
+                                                        // },
+                                                        'handler': pd.implementMe("SDFSFD1")
+                                                    })
+                                                }]
+                                                $s_state.handler.data(['begin', {
+                                                    'type': $
+                                                }])
+
+                                            }
+                                            function startWrappedString($: SWrapper) {
+                                                startWrappedToken(
+                                                    ['wrapped string', null],
+                                                    ['string', {
+                                                        'wrapper': $,
+                                                        'slashed': false,
+                                                        'unicode': pl.notSet()
+                                                    }]
+                                                )
+
+                                            }
+                                            switch ($s.found[0]) {
+                                                case 'nothing':
+                                                    pl.cc($s.found[1], ($s) => {
+
+                                                        //when not processing a string, look for markers indicating a full token or the start of a (possible) token
+                                                        const nwct = $d.getNonWrappedCharacterType($)
+                                                        switch (nwct[0]) {
+                                                            case 'marker':
+                                                                pl.cc(nwct[1], ($) => {
+                                                                    //the current character is a marker
+
+                                                                    if ($s['processing'][0] !== 'nothing') {
+                                                                        //the tokenizer was processing a string or whitespace, end it first
+                                                                        $s['processing'][1].snippet.end()
+                                                                        $s['processing'] = ['nothing', null]
                                                                     }
 
-                                                                })
-                                                            })
-                                                            break
-                                                        case 'other':
-                                                            //a non marker, basically any other valid unicode character
-                                                            //this is part of a non wrapped string
-                                                            pl.cc(nwct[1], ($) => {
-                                                                //if currently not processing a string, start it
-                                                                if ($s['processing'][0] === 'nothing') {
-                                                                    $s['processing'] = ['string', {
-                                                                        'snippet': $d.createStringFromCharactersBuilder.construct({
-                                                                            'handler': ($) => {
-                                                                                $s_state.handler.data(['snippet', $])
-                                                                                $s_state.handler.data(['end', null])
-                                                                            }
-                                                                        })
-                                                                    }]
-                                                                    $s_state.handler.data(['begin', {
-                                                                        'type': ['non wrapped string', null]
-                                                                    }])
-                                                                }
-                                                                $s['processing'][1].snippet.data(character)
-                                                            })
-                                                            break
-                                                        default: pl.au(nwct[0])
-                                                    }
-                                                })
-                                                break
-                                            case 'solidus':
-                                                pl.cc($s.found[1], ($s) => {
-                                                    pl.cc($d.getCommentCharacter(character), ($) => {
-                                                        switch ($[0]) {
-                                                            case 'asterisk':
-                                                                pl.cc($[1], ($) => {
-                                                                    startWrappedToken(
-                                                                        ['block comment', null],
-                                                                        ['block comment', {
-                                                                            'found asterisk': false
-                                                                        }],
-                                                                    )
+                                                                    //guaranteed to not be processing a string or whitespace, so cast to state
+                                                                    pl.cc($s['processing'][1], ($s) => {
+
+                                                                        const $s_nonprocessing = $s
+
+                                                                        switch ($[0]) {
+                                                                            case 'apostrophe':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    startWrappedString(['apostrophe', null])
+                                                                                })
+                                                                                break
+                                                                            case 'backtick':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    startWrappedString(['backtick', null])
+                                                                                })
+                                                                                break
+                                                                            case 'quotation mark':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    startWrappedString(['quote', null])
+                                                                                })
+                                                                                break
+                                                                            case 'close angle bracket':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['close shorthand group', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'close brace':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['close dictionary', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'close bracket':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['close list', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'close parenthesis':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['close verbose group', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'colon':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['colon', null])
+                                                                                })
+                                                                                break
+                                                                            case 'comma':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['comma', null])
+
+                                                                                })
+                                                                                break
+                                                                            case 'exclamation mark':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['header start', null])
+                                                                                })
+                                                                                break
+                                                                            case 'open angle bracket':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['open shorthand group', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'open brace':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['open dictionary', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'open bracket':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['open list', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'open parenthesis':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['open verbose group', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'solidus':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    //start of comment
+                                                                                    $s_nonwrapped.found = ['solidus', null]
+                                                                                })
+                                                                                break
+                                                                            case 'vertical line':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    $s_state.handler.data(['structural', {
+                                                                                        'type': ['tagged union start', null]
+                                                                                    }])
+                                                                                })
+                                                                                break
+                                                                            case 'whitespace':
+                                                                                pl.cc($[1], ($) => {
+                                                                                    pd.logDebugMessage("FDSFSDFSDF")
+                                                                                    const handler = $d.createStringFromCharactersBuilder.construct({
+                                                                                        // 'handler': ($) => {
+                                                                                        //     $s_state.handler.data(['snippet', $])
+                                                                                        // },
+                                                                                        'handler': pd.implementMe("SDFSFD3")
+                                                                                    })
+                                                                                    // $s_state['context'] = ['string', {
+                                                                                    //     'type': ['whitespace', null],
+                                                                                    //     'snippet': handler
+                                                                                    // }]
+                                                                                    // handler.data(char.code)
+                                                                                })
+                                                                                break
+
+                                                                            default: pl.au($[0])
+                                                                        }
+
+                                                                    })
                                                                 })
                                                                 break
-                                                            case 'illegal':
-                                                                pl.cc($[1], ($) => {
-                                                                    $s_state.errorHandler.data(['found dangling slash', null])
+                                                            case 'other':
+                                                                //a non marker, basically any other valid unicode character
+                                                                //this is part of a non wrapped string
+                                                                pl.cc(nwct[1], ($) => {
+                                                                    //if currently not processing a string, start it
+                                                                    if ($s['processing'][0] === 'nothing') {
+                                                                        $s['processing'] = ['string', {
+                                                                            'snippet': $d.createStringFromCharactersBuilder.construct({
+                                                                                'handler': ($) => {
+                                                                                    $s_state.handler.data(['snippet', $])
+                                                                                    $s_state.handler.data(['end', null])
+                                                                                },
+                                                                            })
+                                                                        }]
+                                                                        $s_state.handler.data(['begin', {
+                                                                            'type': ['non wrapped string', null]
+                                                                        }])
+                                                                    }
+                                                                    $s['processing'][1].snippet.data(character)
                                                                 })
                                                                 break
-                                                            case 'solidus':
-                                                                pl.cc($[1], ($) => {
-                                                                    startWrappedToken(
-                                                                        ['line comment', null],
-                                                                        ['line comment', null],
-                                                                    )
-                                                                })
-                                                                break
-                                                            default: pl.au($[0])
+                                                            default: pl.au(nwct[0])
                                                         }
                                                     })
-                                                    $s_nonwrapped.found = ['nothing', {
-                                                        'processing': ['nothing', null],
+                                                    break
+                                                case 'solidus':
+                                                    pl.cc($s.found[1], ($s) => {
+                                                        pl.cc($d.getCommentCharacter(character), ($) => {
+                                                            switch ($[0]) {
+                                                                case 'asterisk':
+                                                                    pl.cc($[1], ($) => {
+                                                                        startWrappedToken(
+                                                                            ['block comment', null],
+                                                                            ['block comment', {
+                                                                                'found asterisk': false
+                                                                            }],
+                                                                        )
+                                                                    })
+                                                                    break
+                                                                case 'illegal':
+                                                                    pl.cc($[1], ($) => {
+                                                                        $s_state.errorHandler.data(['found dangling slash', null])
+                                                                    })
+                                                                    break
+                                                                case 'solidus':
+                                                                    pl.cc($[1], ($) => {
+                                                                        startWrappedToken(
+                                                                            ['line comment', null],
+                                                                            ['line comment', null],
+                                                                        )
+                                                                    })
+                                                                    break
+                                                                default: pl.au($[0])
+                                                            }
+                                                        })
+                                                        $s_nonwrapped.found = ['nothing', {
+                                                            'processing': ['nothing', null],
 
-                                                    }]
-                                                })
-                                                break
-                                            default: pl.au($s.found[0])
-                                        }
+                                                        }]
+                                                    })
+                                                    break
+                                                default: pl.au($s.found[0])
+                                            }
 
-                                    })
-                                    break
-                                case 'wrapped':
-                                    pl.cc($s.context[1], ($s) => {
-                                        //currently processing a wrapped token
+                                        })
+                                        break
+                                    case 'wrapped':
+                                        pl.cc($s.context[1], ($s) => {
+                                            //currently processing a wrapped token
 
-                                        switch ($s.type[0]) {
-                                            case 'block comment':
-                                                pl.cc($s.type[1], ($s) => {
+                                            switch ($s.type[0]) {
+                                                case 'block comment':
+                                                    pl.cc($s.type[1], ($s) => {
 
-                                                })
-                                                break
-                                            case 'line comment':
-                                                pl.cc($s.type[1], ($s) => {
+                                                    })
+                                                    break
+                                                case 'line comment':
+                                                    pl.cc($s.type[1], ($s) => {
 
-                                                })
-                                                break
-                                            case 'string':
-                                                pl.cc($s.type[1], ($s) => {
+                                                    })
+                                                    break
+                                                case 'string':
+                                                    pl.cc($s.type[1], ($s) => {
 
-                                                })
-                                                break
-                                            default: pl.au($s.type[0])
-                                        }
-                                        pd.logDebugMessage("$$@#$@#$@#$")
-                                        // function onStart($: g_this.T.PreToken._ltype.begin._ltype) {
-                                        //     $s.handler.data(['begin', {
-                                        //         'type': $,
-                                        //     }])
-                                        // }
-                                        // function noCurrentToken() {
-                                        //     $s['context'] = ['no', { 'found': ['nothing', null] }]
-                                        // }
-                                        // function init_ProcessingToken_No(): SProcessingToken {
-                                        //     return ['no', {
-                                        //         'found': ['nothing', null]
-                                        //     }]
-                                        // }
-                                        // function init_ProcessingToken_Yes(props: {
-                                        //     type: SProcessingToken_Type
-                                        // }): SProcessingToken {
-                                        //     return ['string', {
-                                        //         'type': props.type,
-                                        //         'snippet': $d.createStringFromCharactersBuilder.construct({
-                                        //             'handler': ($) => {
-                                        //                 $s.handler.data(['snippet', $])
-                    
-                                        //             }
-                                        //         }),
-                                        //     }]
-                                        // }
-                                        //handle the character
-                                        // switch ($s['context'][0]) {
-                                        //     case 'no':
-                                        //         pl.cc($s['context'][1], ($s) => {
-                                        //             const $s_pt = $s
-                                        //             function handleChar() {
-                                        //                 pl.optional(
-                                        //                     $.type.nontoken,
-                                        //                     ($) => {
-                                        //                         handleNonWrappedCharacter($)
-                                        //                     },
-                                        //                     () => {
-                                        //                         $s_state['context'] = ['string', {
-                                        //                             'type': ['non string', null],
-                                        //                             'snippet': $d.createStringFromCharactersBuilder.construct({
-                                        //                                 'handler': ($) => {
-                                        //                                     $s_state.handler.data(['snippet', $])
-                                        //                                 }
-                                        //                             })
-                                        //                         }]
-                                        //                     }
-                                        //                 )
-                                        //             }
-                                        //             switch ($s.found[0]) {
-                                        //                 case 'newlineCharacter':
-                                        //                     pl.cc($s.found[1], ($s) => {
-                                        //                         switch ($s.type[0]) {
-                                        //                             case 'carriage return':
-                                        //                                 pl.cc($s.type[1], ($s) => {
-                                        //                                     if ($.type.whitespace[0] === true && $.type.whitespace[1][0] === 'line feed') {
-                                        //                                         //carriage return / line feed combi
-                                        //                                         //newline already sent
-                                        //                                     } else {
-                                        //                                         //other character
-                                        //                                         $s_pt.found = ['nothing', null]
-                                        //                                         handleChar()
-                                        //                                     }
-                                        //                                 })
-                                        //                                 break
-                                        //                             case 'line feed':
-                                        //                                 pl.cc($s.type[1], ($s) => {
-                                        //                                     if ($.type.whitespace[0] === true && $.type.whitespace[1][0] === 'carriage return') {
-                                        //                                         //line feed / carriage return combi
-                                        //                                     } else {
-                                        //                                         $s_pt.found = ['nothing', null]
-                                        //                                         handleChar()
-                                        //                                     }
-                                        //                                 })
-                                        //                                 break
-                                        //                             default: pl.au($s.type[0])
-                                        //                         }
-                                        //                     })
-                                        //                     break
-                                        //                 case 'nothing':
-                                        //                     handleChar()
-                                        //                     break
-                                        //                 case 'solidus':
-                                        //                     pl.cc($s.found[1], ($s) => {
-                    
-                                        //                         if ($.type.comment[0] === true && $.type.comment[1][0] === 'asterisk') {
-                                        //                             //start of block comment
-                                        //                             $s_state.handler.data(['begin', {
-                                        //                                 'type': ['block comment', null],
-                                        //                             }])
-                                        //                             $s_state['context'] = ['string', {
-                                        //                                 'type': ['block comment', {
-                                        //                                     'foundAsterisk': [false]
-                                        //                                 }],
-                                        //                                 'snippet': $d.createStringFromCharactersBuilder.construct({
-                                        //                                     'handler': ($) => {
-                                        //                                         $s_state.handler.data(['snippet', $])
-                                        //                                     }
-                                        //                                 })
-                                        //                             }]
-                                        //                         } else {
-                                        //                             //not the start of a block comment, a dangling solidus
-                                        //                             $s_state.errorHandler.data(['found dangling slash', null])
-                                        //                         }
-                                        //                     })
-                                        //                     break
-                                        //                 default: pl.au($s.found[0])
-                                        //             }
-                                        //         })
-                                        //         break
-                                        //     case 'string':
-                                        //         pl.cc($s['context'][1], ($s) => {
-                                        //             const currentToken = $s
-                                        //             switch ($s.type[0]) {
-                                        //                 case 'block comment':
-                                        //                     pl.cc($s.type[1], ($s) => {
-                                        //                         pl.optional(
-                                        //                             $s.foundAsterisk,
-                                        //                             ($s) => {
-                    
-                                        //                                 if ($.type.comment[0] === true && $.type.comment[1][0] === 'solidus') {
-                                        //                                     //end of the comment
-                                        //                                     end_Wrapped(currentToken)
-                                        //                                     $s_state['context'] = ['no', {
-                                        //                                         'found': ['nothing', null]
-                                        //                                     }]
-                                        //                                 } else {
-                                        //                                     //not the end of the comment
-                                        //                                     currentToken.snippet.data($s) //send the asterisk
-                                        //                                     currentToken.snippet.data($.code) //send the current char
-                                        //                                 }
-                                        //                             },
-                                        //                             () => {
-                                        //                                 if ($.type.comment[0] === true && $.type.comment[1][0] === 'asterisk') {
-                                        //                                     //possible start of comment
-                                        //                                     $s.foundAsterisk = [true, $.code]
-                                        //                                 } else {
-                                        //                                     currentToken.snippet.data($.code)
-                                        //                                 }
-                                        //                             }
-                                        //                         )
-                                        //                     })
-                                        //                     break
-                                        //                 case 'line comment':
-                                        //                     pl.cc($s.type[1], ($s) => {
-                                        //                         //if ()
-                                        //                         pd.implementMe("@@@@1")
-                                        //                     })
-                                        //                     break
-                                        //                 case 'non string':
-                                        //                     pl.cc($s.type[1], ($s) => {
-                                        //                         pl.optional(
-                                        //                             $.type.nontoken,
-                                        //                             ($) => {
-                                        //                                 //the end of the non string
-                                        //                                 currentToken.snippet.end()
-                                        //                                 $s_state['context'] = ['no', {
-                                        //                                     'found': ['nothing', null]
-                                        //                                 }]
-                                        //                                 handleNonWrappedCharacter($)
-                                        //                             },
-                                        //                             () => {
-                                        //                                 //a regular character
-                                        //                                 currentToken.snippet.data($.code)
-                                        //                             }
-                                        //                         )
-                                        //                     })
-                                        //                     break
-                                        //                 case 'whitespace':
-                                        //                     pl.cc($s.type[1], ($s) => {
-                                        //                         pl.optional(
-                                        //                             $.type.whitespace,
-                                        //                             ($) => {
-                                        //                                 //the end of the non string
-                                        //                                 currentToken.snippet.end()
-                                        //                                 $s_state['context'] = ['no', {
-                                        //                                     'found': ['nothing', null]
-                                        //                                 }]
-                                        //                                 handleNonWrappedCharacter($)
-                                        //                             },
-                                        //                             () => {
-                                        //                                 //a regular character
-                                        //                                 currentToken.snippet.data($.code)
-                                        //                             }
-                                        //                         )
-                                        //                     })
-                                        //                     break
-                                        //                 case 'string':
-                                        //                     pl.cc($s.type[1], ($s) => {
-                                        //                         pd.implementMe("@@@@5")
-                                        //                         $s.foundNewlineCharacter
-                                        //                         $s.slashed
-                                        //                         $s.startCharacter
-                                        //                         $s.unicode
-                                        //                     })
-                                        //                     break
-                                        //                 default: pl.au($s.type[0])
-                                        //             }
-                    
-                                        //         })
-                                        //         break
-                                        //     default: pl.au($s['context'][0])
-                                        // }
-                                    })
-                                    break
-                                default: pl.au($s.context[0])
+                                                    })
+                                                    break
+                                                default: pl.au($s.type[0])
+                                            }
+                                            pd.logDebugMessage("$$@#$@#$@#$")
+                                            // function onStart($: g_this.T.PreToken._ltype.begin._ltype) {
+                                            //     $s.handler.data(['begin', {
+                                            //         'type': $,
+                                            //     }])
+                                            // }
+                                            // function noCurrentToken() {
+                                            //     $s['context'] = ['no', { 'found': ['nothing', null] }]
+                                            // }
+                                            // function init_ProcessingToken_No(): SProcessingToken {
+                                            //     return ['no', {
+                                            //         'found': ['nothing', null]
+                                            //     }]
+                                            // }
+                                            // function init_ProcessingToken_Yes(props: {
+                                            //     type: SProcessingToken_Type
+                                            // }): SProcessingToken {
+                                            //     return ['string', {
+                                            //         'type': props.type,
+                                            //         'snippet': $d.createStringFromCharactersBuilder.construct({
+                                            //             'handler': ($) => {
+                                            //                 $s.handler.data(['snippet', $])
+
+                                            //             }
+                                            //         }),
+                                            //     }]
+                                            // }
+                                            //handle the character
+                                            // switch ($s['context'][0]) {
+                                            //     case 'no':
+                                            //         pl.cc($s['context'][1], ($s) => {
+                                            //             const $s_pt = $s
+                                            //             function handleChar() {
+                                            //                 pl.optional(
+                                            //                     $.type.nontoken,
+                                            //                     ($) => {
+                                            //                         handleNonWrappedCharacter($)
+                                            //                     },
+                                            //                     () => {
+                                            //                         $s_state['context'] = ['string', {
+                                            //                             'type': ['non string', null],
+                                            //                             'snippet': $d.createStringFromCharactersBuilder.construct({
+                                            //                                 'handler': ($) => {
+                                            //                                     $s_state.handler.data(['snippet', $])
+                                            //                                 }
+                                            //                             })
+                                            //                         }]
+                                            //                     }
+                                            //                 )
+                                            //             }
+                                            //             switch ($s.found[0]) {
+                                            //                 case 'newlineCharacter':
+                                            //                     pl.cc($s.found[1], ($s) => {
+                                            //                         switch ($s.type[0]) {
+                                            //                             case 'carriage return':
+                                            //                                 pl.cc($s.type[1], ($s) => {
+                                            //                                     if ($.type.whitespace[0] === true && $.type.whitespace[1][0] === 'line feed') {
+                                            //                                         //carriage return / line feed combi
+                                            //                                         //newline already sent
+                                            //                                     } else {
+                                            //                                         //other character
+                                            //                                         $s_pt.found = ['nothing', null]
+                                            //                                         handleChar()
+                                            //                                     }
+                                            //                                 })
+                                            //                                 break
+                                            //                             case 'line feed':
+                                            //                                 pl.cc($s.type[1], ($s) => {
+                                            //                                     if ($.type.whitespace[0] === true && $.type.whitespace[1][0] === 'carriage return') {
+                                            //                                         //line feed / carriage return combi
+                                            //                                     } else {
+                                            //                                         $s_pt.found = ['nothing', null]
+                                            //                                         handleChar()
+                                            //                                     }
+                                            //                                 })
+                                            //                                 break
+                                            //                             default: pl.au($s.type[0])
+                                            //                         }
+                                            //                     })
+                                            //                     break
+                                            //                 case 'nothing':
+                                            //                     handleChar()
+                                            //                     break
+                                            //                 case 'solidus':
+                                            //                     pl.cc($s.found[1], ($s) => {
+
+                                            //                         if ($.type.comment[0] === true && $.type.comment[1][0] === 'asterisk') {
+                                            //                             //start of block comment
+                                            //                             $s_state.handler.data(['begin', {
+                                            //                                 'type': ['block comment', null],
+                                            //                             }])
+                                            //                             $s_state['context'] = ['string', {
+                                            //                                 'type': ['block comment', {
+                                            //                                     'foundAsterisk': [false]
+                                            //                                 }],
+                                            //                                 'snippet': $d.createStringFromCharactersBuilder.construct({
+                                            //                                     'handler': ($) => {
+                                            //                                         $s_state.handler.data(['snippet', $])
+                                            //                                     }
+                                            //                                 })
+                                            //                             }]
+                                            //                         } else {
+                                            //                             //not the start of a block comment, a dangling solidus
+                                            //                             $s_state.errorHandler.data(['found dangling slash', null])
+                                            //                         }
+                                            //                     })
+                                            //                     break
+                                            //                 default: pl.au($s.found[0])
+                                            //             }
+                                            //         })
+                                            //         break
+                                            //     case 'string':
+                                            //         pl.cc($s['context'][1], ($s) => {
+                                            //             const currentToken = $s
+                                            //             switch ($s.type[0]) {
+                                            //                 case 'block comment':
+                                            //                     pl.cc($s.type[1], ($s) => {
+                                            //                         pl.optional(
+                                            //                             $s.foundAsterisk,
+                                            //                             ($s) => {
+
+                                            //                                 if ($.type.comment[0] === true && $.type.comment[1][0] === 'solidus') {
+                                            //                                     //end of the comment
+                                            //                                     end_Wrapped(currentToken)
+                                            //                                     $s_state['context'] = ['no', {
+                                            //                                         'found': ['nothing', null]
+                                            //                                     }]
+                                            //                                 } else {
+                                            //                                     //not the end of the comment
+                                            //                                     currentToken.snippet.data($s) //send the asterisk
+                                            //                                     currentToken.snippet.data($.code) //send the current char
+                                            //                                 }
+                                            //                             },
+                                            //                             () => {
+                                            //                                 if ($.type.comment[0] === true && $.type.comment[1][0] === 'asterisk') {
+                                            //                                     //possible start of comment
+                                            //                                     $s.foundAsterisk = [true, $.code]
+                                            //                                 } else {
+                                            //                                     currentToken.snippet.data($.code)
+                                            //                                 }
+                                            //                             }
+                                            //                         )
+                                            //                     })
+                                            //                     break
+                                            //                 case 'line comment':
+                                            //                     pl.cc($s.type[1], ($s) => {
+                                            //                         //if ()
+                                            //                         pd.implementMe("@@@@1")
+                                            //                     })
+                                            //                     break
+                                            //                 case 'non string':
+                                            //                     pl.cc($s.type[1], ($s) => {
+                                            //                         pl.optional(
+                                            //                             $.type.nontoken,
+                                            //                             ($) => {
+                                            //                                 //the end of the non string
+                                            //                                 currentToken.snippet.end()
+                                            //                                 $s_state['context'] = ['no', {
+                                            //                                     'found': ['nothing', null]
+                                            //                                 }]
+                                            //                                 handleNonWrappedCharacter($)
+                                            //                             },
+                                            //                             () => {
+                                            //                                 //a regular character
+                                            //                                 currentToken.snippet.data($.code)
+                                            //                             }
+                                            //                         )
+                                            //                     })
+                                            //                     break
+                                            //                 case 'whitespace':
+                                            //                     pl.cc($s.type[1], ($s) => {
+                                            //                         pl.optional(
+                                            //                             $.type.whitespace,
+                                            //                             ($) => {
+                                            //                                 //the end of the non string
+                                            //                                 currentToken.snippet.end()
+                                            //                                 $s_state['context'] = ['no', {
+                                            //                                     'found': ['nothing', null]
+                                            //                                 }]
+                                            //                                 handleNonWrappedCharacter($)
+                                            //                             },
+                                            //                             () => {
+                                            //                                 //a regular character
+                                            //                                 currentToken.snippet.data($.code)
+                                            //                             }
+                                            //                         )
+                                            //                     })
+                                            //                     break
+                                            //                 case 'string':
+                                            //                     pl.cc($s.type[1], ($s) => {
+                                            //                         pd.implementMe("@@@@5")
+                                            //                         $s.foundNewlineCharacter
+                                            //                         $s.slashed
+                                            //                         $s.startCharacter
+                                            //                         $s.unicode
+                                            //                     })
+                                            //                     break
+                                            //                 default: pl.au($s.type[0])
+                                            //             }
+
+                                            //         })
+                                            //         break
+                                            //     default: pl.au($s['context'][0])
+                                            // }
+                                        })
+                                        break
+                                    default: pl.au($s.context[0])
+                                }
+
                             }
-
-                        }
-                    )
+                        )
 
                     //update position
                     $s_state.position = newPosition
@@ -854,7 +856,7 @@ export const $$: A.createPreTokenizer = ($c, $d) => {
 
                 }],
                 'position': $c,
-                'found newline': [false],
+                'found newline': pl.notSet(),
             }
 
             return xx($s)

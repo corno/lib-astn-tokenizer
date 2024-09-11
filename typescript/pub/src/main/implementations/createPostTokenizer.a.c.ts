@@ -2,6 +2,8 @@ import * as pt from 'pareto-core-types'
 import * as pl from 'pareto-core-lib'
 import * as pd from 'pareto-core-dev'
 
+import * as tempinternals from 'pareto-core-internals'
+
 import { A } from "../api.generated"
 
 import * as g_build from "res-pareto-build"
@@ -91,8 +93,7 @@ export const $$: A.createPostTokenizer = ($d) => {
                 })
 
                 //is there a current token?
-                pl.optional(
-                    $s.currentToken,
+                $s.currentToken.map(
                     ($s) => {
                         //there is a current token
                         switch ($.type[0]) {
@@ -118,7 +119,7 @@ export const $$: A.createPostTokenizer = ($d) => {
                             case 'begin':
                                 pl.cc($.type[1], ($) => {
                                     const ctt = $.type
-                                    $s.currentToken = [true, {
+                                    $s.currentToken = pl.set({
                                         'stringBuilder': $d.createStringBuilder.construct({
                                             'handler': ($) => {
                                                 switch (ctt[0]) {
@@ -136,10 +137,10 @@ export const $$: A.createPostTokenizer = ($d) => {
                                                         break
                                                     case 'non wrapped string':
                                                         pl.cc(ctt, ($s) => {
-                                                            $s_state.nonTokensBuilder.end([true, ['simple string', {
+                                                            $s_state.nonTokensBuilder.end(pl.set(['simple string', {
                                                                 'value': $.string,
                                                                 'wrapping': ['none', null],
-                                                            }]])
+                                                            }]))
 
                                                         })
                                                         break
@@ -151,17 +152,17 @@ export const $$: A.createPostTokenizer = ($d) => {
                                                         break
                                                     case 'wrapped string':
                                                         pl.cc(ctt, ($s) => {
-                                                            $s_state.nonTokensBuilder.end([true, ['simple string', {
+                                                            $s_state.nonTokensBuilder.end(pl.set(['simple string', {
                                                                 'value': $.string,
                                                                 'wrapping': ['none', null],
-                                                            }]])
+                                                            }]))
                                                         })
                                                         break
                                                     default: pl.au(ctt[0])
                                                 }
                                             }
                                         }),
-                                    }]
+                                    })
                                 })
                                 break
                             case 'colon':
@@ -171,12 +172,12 @@ export const $$: A.createPostTokenizer = ($d) => {
                                 break
                             case 'comma':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.nonTokensBuilder.end([true, ['header start', null]])
+                                    $s_state.nonTokensBuilder.end(pl.set(['header start', null]))
                                 })
                                 break
                             case 'header start':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.nonTokensBuilder.end([true, ['header start', null]])
+                                    $s_state.nonTokensBuilder.end(pl.set(['header start', null]))
                                 })
                                 break
                             case 'newline':
@@ -196,7 +197,7 @@ export const $$: A.createPostTokenizer = ($d) => {
                                 break
                             case 'structural':
                                 pl.cc($.type[1], ($) => {
-                                    $s_state.nonTokensBuilder.end([true, ['structural', $]])
+                                    $s_state.nonTokensBuilder.end(pl.set(['structural', $]))
                                 })
                                 break
                             default: {
@@ -207,8 +208,7 @@ export const $$: A.createPostTokenizer = ($d) => {
                 )
             },
             'end': ($) => {
-                pl.optional(
-                    $s.currentToken,
+                $s.currentToken.map(
                     ($s) => {
                         $s_state.errorHandler.data(['unclosed token', {
                             'location': $
@@ -218,7 +218,7 @@ export const $$: A.createPostTokenizer = ($d) => {
                         //there was no current token
                     }
                 )
-                $s_state.nonTokensBuilder.end([false])
+                $s_state.nonTokensBuilder.end(pl.notSet())
                 $s_state.errorHandler.end()
             }
         }
@@ -245,8 +245,7 @@ export const $$: A.createPostTokenizer = ($d) => {
                 'nonTokensBuilder': $d.createArrayBuilder.construct({
                     'handler': ($) => {
                         const nontokens = $.array
-                        pl.optional(
-                            $.end,
+                        $.end.map(
                             ($) => {
                                 // $is.handler.data({
                                 //     'annotation': {
@@ -255,9 +254,9 @@ export const $$: A.createPostTokenizer = ($d) => {
                                 //     },
                                 //     'token': $,
                                 // })
-                                
+
                             },
-                            ()=> {
+                            () => {
 
                             }
                         )
@@ -273,7 +272,7 @@ export const $$: A.createPostTokenizer = ($d) => {
 
                 //     }
                 // },
-                'currentToken': [false],
+                'currentToken': pl.notSet(),
                 //'nt': initNonTokens(),
                 'lineIsDirty': false,
             })
